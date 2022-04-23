@@ -1,0 +1,28 @@
+.tableContainer {
+    border: 1px solid rgba(224, 224, 224, 1);
+    border-radius: 10px;
+}
+
+.tableContainer tbody tr:last-child td {
+    border: none;
+}
+
+.pagination {
+    padding: 20px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.loading{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}

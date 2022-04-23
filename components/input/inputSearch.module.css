@@ -1,0 +1,17 @@
+.container{
+    display: flex;
+    min-width: 0;
+    width: 100%;
+}
+
+.button{
+    background-color:  #5B27ED;
+    border: none;
+    padding: 10px;
+    color: white;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+    cursor: pointer;
+}
+
+
