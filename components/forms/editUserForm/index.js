@@ -14,7 +14,7 @@ import styles from './userForm.module.css'
 import { Dialog, DialogActions, DialogContent, DialogTitle, IconButton, useMediaQuery } from '@mui/material'
 import { useTheme } from '@emotion/react'
 import CloseIcon from '@mui/icons-material/Close'
-import useLists from 'hooks/useLists'
+import { useLists } from 'providers/listProvider'
 
 const userForm = ({ open, onClose, user, onSuccess }) => {
   const { formState: { errors }, handleSubmit, control, reset } = useForm({

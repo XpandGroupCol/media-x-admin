@@ -13,7 +13,7 @@ const Autocomplete = forwardRef(({
     disableCloseOnSelect={multiple}
     onChange={(_, value) => onChange(value)}
     multiple={multiple}
-    isOptionEqualToValue={!multiple ? (option, value) => option.id === value.id : undefined}
+    isOptionEqualToValue={(option, value) => option.id === value.id}
     value={value}
     fullWidth
     {...props}

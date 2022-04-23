@@ -35,7 +35,7 @@ a {
   width: 400px;
 }
 
-.section{
+.section {
   display: flex;
   border: 1px solid rgba(224, 224, 224, 1);
   padding: 20px;
@@ -44,14 +44,14 @@ a {
   margin-bottom: 20px;
 }
 
-.header{
+.header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
 }
 
-.header h1{
+.header h1 {
   font-size: 24px;
   font-weight: bold;
   text-transform: uppercase;
@@ -87,4 +87,25 @@ a {
 
   -webkit-animation-name: fadeIn;
   animation-name: fadeIn;
+}
+
+.active {
+  background-color: #54d62c29;
+  color: #229a16;
+  padding: 3px 6px;
+  border-radius: 10px;
+}
+
+.inactive {
+  padding: 3px 6px;
+  border-radius: 10px;
+  background-color: #ff484229;
+  color: #b72136;
+}
+
+.ellipse {
+  max-height: 80px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  background-color: red;
 }

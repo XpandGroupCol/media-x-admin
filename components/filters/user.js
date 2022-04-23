@@ -1,9 +1,12 @@
 import Select from 'components/select'
 import InputSearch from 'components/input/searchInput'
 import useQueryParams from 'hooks/useQueryParams'
+import { useLists } from 'providers/listProvider'
 
 const userFilters = () => {
   const { role = 'default', status = 'default', setQueryParams } = useQueryParams()
+
+  const { roles = [], statuses = [] } = useLists()
 
   const handleChangeList = ({ target }) => {
     const { name, value } = target
@@ -20,11 +23,11 @@ const userFilters = () => {
       />
       <Select
         name='role'
-        label='Buscar'
+        label='Rol'
         size='small'
         onChange={handleChangeList}
         value={role}
-        options={[]}
+        options={roles}
       />
       <Select
         name='status'
@@ -32,7 +35,7 @@ const userFilters = () => {
         size='small'
         onChange={handleChangeList}
         value={status}
-        options={[]}
+        options={statuses}
       />
     </>
   )

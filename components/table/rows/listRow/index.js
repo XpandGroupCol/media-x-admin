@@ -5,6 +5,7 @@ import ToggleOnIcon from '@mui/icons-material/ToggleOn'
 import ToggleOffIcon from '@mui/icons-material/ToggleOff'
 import { memo } from 'react'
 import { areEqual } from 'utils'
+import StatusTag from 'components/statusTag'
 
 export const HEADERS = [
   'Nombre',
@@ -18,15 +19,15 @@ const ListRow = ({ row, onUpdate, onDelete }) => {
         {row.name}
       </TableCell>
       <TableCell width={150}>
-        {row.status ? 'Activo' : 'Inactivo'}
+        <StatusTag status={row.status} />
       </TableCell>
       <TableCell width={120}>
         <div className={styles.row}>
           <IconButton size='small' onClick={onUpdate}>
-            <EditIcon fontSize='16' />
+            <EditIcon fontSize='small' />
           </IconButton>
-          <IconButton size='small' onClick={onDelete} color={row.status ? 'error' : 'success'}>
-            {row.status ? <ToggleOffIcon fontSize='16' /> : <ToggleOnIcon fontSize='16' />}
+          <IconButton size='small' onClick={onDelete} sx={{ color: !row.status ? '#ff4842' : '#54d62c' }}>
+            {!row.status ? <ToggleOnIcon fontSize='small' /> : <ToggleOffIcon fontSize='small' />}
           </IconButton>
         </div>
       </TableCell>

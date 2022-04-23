@@ -4,6 +4,7 @@ import { useSession } from 'next-auth/react'
 
 import LoadingPage from 'components/loadingPage'
 import AdminLayout from 'layouts/adminLayout'
+import ListProvider from 'providers/listProvider'
 const Private = ({ children }) => {
   const { data: session } = useSession({ required: true })
   const isUser = !!session?.user
@@ -15,9 +16,11 @@ const Private = ({ children }) => {
 
   if (isUser) {
     return (
-      <AdminLayout>
-        {children}
-      </AdminLayout>
+      <ListProvider>
+        <AdminLayout>
+          {children}
+        </AdminLayout>
+      </ListProvider>
     )
   }
 

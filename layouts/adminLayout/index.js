@@ -109,8 +109,11 @@ const AdminLayout = ({ children }) => {
           </div>
 
           <button onClick={handleClick} className={styles.logout}>
-            <Typography>{data?.user?.name}</Typography>
-            <Avatar sx={{ width: 32, height: 32 }}>M</Avatar>
+            <div>
+              <Typography>{data?.user?.name}</Typography>
+              <Typography sx={{ fontSize: 12, textAlign: 'right' }}>{data?.user?.role}</Typography>
+            </div>
+            <Avatar sx={{ width: 36, height: 36 }}>M</Avatar>
           </button>
           <Menu
             id='basic-menu'

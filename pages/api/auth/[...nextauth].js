@@ -1,5 +1,6 @@
 import NextAuth from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
+import { signInWithCredentials } from 'services/auth'
 
 export default NextAuth({
   session: {
@@ -15,7 +16,8 @@ export default NextAuth({
         verifyEmail: { label: 'verifyEmail', type: 'text' }
       },
       async authorize ({ email, password }) {
-
+        const user = await signInWithCredentials({ email, password })
+        return user
       }
     })
   ],
@@ -25,7 +27,7 @@ export default NextAuth({
   },
   callbacks: {
     async jwt ({ token, user }) {
-      if (user?.data) { token = { ...user.data } }
+      if (user) { token = { ...user } }
       return token
     },
     async session ({ session, token }) {

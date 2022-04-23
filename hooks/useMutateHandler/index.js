@@ -18,12 +18,12 @@ const useMutateHandler = () => {
         data: body
       })
 
-      notify({ type: 'success', message: 'todo ok' })
+      notify({ type: 'success', message: 'Registro creado/actualizado con exito.' })
       setLoading(false)
       onSuccess && onSuccess(data)
       return data
     } catch (error) {
-      notify({ type: 'error', message: 'todo mal' })
+      notify({ type: 'error', message: 'Algo salio mal, por favor intente nuevamente.' })
       setLoading(false)
     }
   }, [])

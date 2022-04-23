@@ -2,49 +2,11 @@ export const areEqual = (prevData, nextData) => {
   return JSON.stringify(prevData.row) === JSON.stringify(nextData.row)
 }
 
-export const ROLES = [
-  {
-    id: 'SUPER_ADMIN',
-    label: 'Super Admin'
-  },
-  {
-    id: 'ADMIN',
-    label: 'Admin'
-  },
-  {
-    id: 'CLIENT',
-    label: 'Client'
-  },
-  {
-    id: 'CLIENT',
-    label: 'Seo'
-  }
-]
+export const getFormatedNumber = (number, locales = 'en') =>
+  Intl?.NumberFormat ? new Intl.NumberFormat(locales).format(number) : number
 
-export const DEVICE = [
-  {
-    id: 'all',
-    label: 'Todos'
-  },
-  {
-    id: 'mobile',
-    label: 'Mobile'
-  },
-  {
-    id: 'desktop',
-    label: 'Desktop'
-  }
-]
+export const getFormatedLists = (list = []) => list?.map(({ label }) => label).join(' - ')
 
-export const SEX = [
-  {
-    id: 'all',
-    label: 'Todos'
-  }, {
-    id: 'male',
-    label: 'Hombres'
-  }, {
-    id: 'women',
-    label: 'Mujeres'
-  }
-]
+export const getEllipse = (text) => {
+  return text.length > 40 ? `${text.slice(0, 40)}...` : text
+}

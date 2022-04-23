@@ -17,7 +17,7 @@ import { useTheme } from '@emotion/react'
 import CloseIcon from '@mui/icons-material/Close'
 
 import UploadFile from 'components/uploadFile'
-import useLists from 'hooks/useLists'
+import {useLists} from 'providers/listProvider'
 
 const userForm = ({ open, onClose, onSuccess }) => {
   const { formState: { errors }, handleSubmit, control, reset } = useForm({

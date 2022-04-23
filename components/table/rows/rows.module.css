@@ -1,9 +1,14 @@
 .row {
     display: flex;
-    gap: 8px;
+    gap: 10px;
     align-items: center;
 }
 
 .info p{
     font-size: inherit;
+}
+
+.info span {
+    font-size: 13px;
+    display: block;
 }

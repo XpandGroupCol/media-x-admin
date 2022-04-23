@@ -1,14 +1,14 @@
 import InputSearch from 'components/input/searchInput'
 import Select from 'components/select'
-import useLists from 'hooks/useLists'
+import { useLists } from 'providers/listProvider'
 import useQueryParams from 'hooks/useQueryParams'
 
 // nombre, marca, objetivo, fechas
 
 const CampaignsFilter = () => {
-  const { objectives = [] } = useLists()
+  const { objectives = [], sectors = [] } = useLists()
 
-  const { objective = 'default', setQueryParams } = useQueryParams()
+  const { objective = 'default', sector = 'default', setQueryParams } = useQueryParams()
 
   const handleChangeList = ({ target }) => {
     const { name, value } = target
@@ -20,7 +20,7 @@ const CampaignsFilter = () => {
         name='search'
         label='Buscar'
         size='small'
-        placeholder='Buscar por nombre o correo'
+        placeholder='Campaña o marca'
       />
       <Select
         name='objective'
@@ -29,6 +29,14 @@ const CampaignsFilter = () => {
         onChange={handleChangeList}
         value={objective}
         options={objectives}
+      />
+      <Select
+        name='sector'
+        label='Sector'
+        size='small'
+        onChange={handleChangeList}
+        value={sector}
+        options={sectors}
       />
     </>
   )

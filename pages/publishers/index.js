@@ -29,9 +29,10 @@ const Publishers = () => {
     handleSetRow()()
   }
 
-  const onDeleteUser = () => {
+  const onDelete = () => {
     const path = `/publishers/${modalShow?.row?.id}`
-    mutateHandler({ onSuccess, method: 'DELETE', path })
+    const body = { status: !modalShow?.row?.status }
+    mutateHandler({ onSuccess, method: 'DELETE', path, body })
   }
 
   return (
@@ -69,15 +70,15 @@ const Publishers = () => {
 
       <ConfirmationModal
         open={Boolean(modalShow?.type === 'delete')}
-        onSubmit={onDeleteUser}
-        title='Eliminar usuario'
+        onSubmit={onDelete}
+        title='Desactivar Sector'
         loading={load}
         onClose={handleSetRow()}
       >
-        <Typography align='center'>Estas seguro de eliminar el usuario
+        <Typography align='center'>Estas seguro de {`${modalShow?.row?.status ? 'desactivar' : 'activar'}`} el siguiente publisher:
           <Typography component='strong' sx={{ fontWeight: 'bold' }}>
-            {' '}{modalShow?.row?.name || ''}
-          </Typography> ?
+            {' '}{modalShow?.row?.publisher || ''}?
+          </Typography>
         </Typography>
       </ConfirmationModal>
     </>

@@ -14,6 +14,7 @@ import './globalStyles.css'
 function MyApp ({ Component, pageProps: { session, ...pageProps } }) {
   return (
     <NotificationProvider>
+
       <SessionProvider session={session}>
         <SWRConfig value={{
           fetcher: (resource, init) => window.fetch(resource, init).then(res => res.json()),

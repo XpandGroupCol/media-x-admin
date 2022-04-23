@@ -1,13 +1,18 @@
 
-import { createContext, useContext } from 'react'
+import { createContext, useCallback, useContext, useMemo } from 'react'
 import useSWR from 'swr'
 
 const ListContext = createContext()
 
 const ListProvider = ({ children }) => {
-  const { data = {} } = useSWR('/api/lists')
+  const { data = {}, mutate } = useSWR(`${process.env.NEXT_PUBLIC_BASE_URL}/lists`)
+
+  const refreshLists = useCallback(() => mutate(data, { revalidate: true }))
+
+  const lists = useMemo(() => data, [data])
+
   return (
-    <ListContext.Provider value={{ ...data }}>
+    <ListContext.Provider value={{ ...lists, refreshLists }}>
       {children}
     </ListContext.Provider>
   )

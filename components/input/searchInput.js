@@ -40,7 +40,7 @@ const InputSearch = ({ ...props }) => {
                 onClick={onClear}
                 size='small'
               >
-                <ClearIcon fontSize='16' />
+                <ClearIcon fontSize='small' />
               </IconButton>
             </InputAdornment>
           )

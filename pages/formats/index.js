@@ -12,6 +12,7 @@ import Typography from 'components/typography'
 import SectorFilters from 'components/filters/lists'
 import ListRow, { HEADERS } from 'components/table/rows/listRow'
 import ListForm from 'components/forms/listForm'
+import { useLists } from 'providers/listProvider'
 
 const Formats = () => {
   const [modalShow, setModalShow] = useState({ type: '', row: null })
@@ -21,6 +22,8 @@ const Formats = () => {
 
   const { loading: load, mutateHandler } = useMutateHandler()
 
+  const { refreshLists } = useLists()
+
   const handleSetRow = useCallback((type = '', row = null) => () => {
     setModalShow({ type, row })
   }, [])
@@ -28,6 +31,7 @@ const Formats = () => {
   const onSuccess = () => {
     mutate(data, { revalidate: true })
     handleSetRow()()
+    refreshLists()
   }
 
   const onDelete = () => {

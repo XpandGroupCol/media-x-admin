@@ -1,10 +1,11 @@
 import { Avatar, IconButton, TableCell, TableRow, Typography } from '@mui/material'
 import EditIcon from '@mui/icons-material/Edit'
-import DeleteIcon from '@mui/icons-material/Delete'
 import styles from '../rows.module.css'
 import { format } from 'date-fns'
 import { memo } from 'react'
 import { areEqual } from 'utils'
+import VisibilityIcon from '@mui/icons-material/Visibility'
+import Link from 'next/link'
 
 const parseDate = (date) => date ? format(new Date(date), 'dd/MM/yyyy') : ''
 
@@ -17,7 +18,7 @@ export const HEADERS = [
   'Acciones'
 ]
 
-const PublisherRow = ({ row, onUpdate, onDelete }) => {
+const PublisherRow = ({ row, onUpdate, onShow }) => {
   return (
     <TableRow>
       <TableCell>
@@ -37,23 +38,28 @@ const PublisherRow = ({ row, onUpdate, onDelete }) => {
           </div>
         </div>
       </TableCell>
-      <TableCell>
-        {parseDate(row?.startDate)} - {parseDate(row?.endDate)}
+      <TableCell width={150}>
+        {parseDate(row?.startDate)} <br />
+        {parseDate(row?.endDate)}
       </TableCell>
       <TableCell>
-        {row?.objective?.name}
+        {row?.objective?.label}
       </TableCell>
       <TableCell>
-        {row?.sector?.name}
+        {row?.sector?.label}
       </TableCell>
-      <TableCell>
+      <TableCell width={120}>
         <div className={styles.row}>
           <IconButton size='small' onClick={onUpdate}>
-            <EditIcon fontSize='16' />
+            <EditIcon fontSize='small' />
           </IconButton>
-          <IconButton size='small' onClick={onDelete} disabled={row?.status?.id === 'inactive'}>
-            <DeleteIcon fontSize='16' />
-          </IconButton>
+          <Link href={`/campaigns/detail/${row?.id}`}>
+            <a>
+              <IconButton size='small' onClick={onShow}>
+                <VisibilityIcon fontSize='small' />
+              </IconButton>
+            </a>
+          </Link>
         </div>
       </TableCell>
     </TableRow>

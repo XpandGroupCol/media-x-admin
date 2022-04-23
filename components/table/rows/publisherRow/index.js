@@ -1,9 +1,12 @@
 import { Avatar, IconButton, TableCell, TableRow, Typography } from '@mui/material'
 import EditIcon from '@mui/icons-material/Edit'
-import DeleteIcon from '@mui/icons-material/Delete'
+import ToggleOnIcon from '@mui/icons-material/ToggleOn'
+import ToggleOffIcon from '@mui/icons-material/ToggleOff'
 import styles from '../rows.module.css'
 import { memo } from 'react'
-import { areEqual } from 'utils'
+import { areEqual, getFormatedLists, getFormatedNumber } from 'utils'
+import Link from 'next/link'
+import Tooltip from 'components/tooltip'
 
 export const HEADERS = [
   'Publisher',
@@ -15,46 +18,49 @@ export const HEADERS = [
   'Sexo',
   'Acciones'
 ]
-const PublisherRow = ({ row, onUpdate, onDelete }) => {
-  console.log({ row })
 
+const PublisherRow = ({ row, onUpdate, onDelete }) => {
   return (
     <TableRow>
-      <TableCell>
+      <TableCell width='22%'>
         <div className={styles.row}>
-          <Avatar sx={{ width: 24, height: 24 }}>H</Avatar>
+          <Avatar sx={{ width: 36, height: 36 }}>H</Avatar>
           <div className={styles.info}>
             <Typography sx={{ fontWeight: 'bold' }}>{row.publisher}</Typography>
-            <Typography>{row.miniBudget}</Typography>
-            <Typography>{row.pricePerUnit}</Typography>
+            <Typography component='span'>$ {getFormatedNumber(row.miniBudget)}</Typography>
+            <Typography component='span'>$ {getFormatedNumber(row.pricePerUnit)} c/u</Typography>
           </div>
         </div>
       </TableCell>
-      <TableCell>
+      <TableCell width='12%'>
         {row?.objective?.label}
       </TableCell>
-      <TableCell>
-        {row?.locations?.map(({ label }) => label).join(' / ')}
+      <TableCell width='12%'>
+        <Tooltip text={getFormatedLists(row?.locations)} />
       </TableCell>
-      <TableCell>
-        {row?.formats?.map(({ label }) => label).join(' / ')}
+      <TableCell width='12%'>
+        <Tooltip text={getFormatedLists(row?.formats)} />
       </TableCell>
-      <TableCell>
-        {row?.ageRange?.map(({ label }) => label).join(' / ')}
+      <TableCell width='12%'>
+        <Tooltip text={getFormatedLists(row?.ageRange)} />
       </TableCell>
-      <TableCell>
+      <TableCell width='10%'>
         {row?.device?.label}
       </TableCell>
-      <TableCell>
+      <TableCell width='10%'>
         {row?.sex?.label}
       </TableCell>
-      <TableCell>
+      <TableCell width='10%'>
         <div className={styles.row}>
-          <IconButton size='small' onClick={onUpdate}>
-            <EditIcon fontSize='16' />
-          </IconButton>
-          <IconButton size='small' onClick={onDelete} disabled={row?.status?.id === 'inactive'}>
-            <DeleteIcon fontSize='16' />
+          <Link href={`publishers/edit/${row?.id}`}>
+            <a>
+              <IconButton size='small' onClick={onUpdate}>
+                <EditIcon fontSize='small' />
+              </IconButton>
+            </a>
+          </Link>
+          <IconButton size='small' onClick={onDelete} sx={{ color: !row.status ? '#ff4842' : '#54d62c' }}>
+            {!row.status ? <ToggleOnIcon fontSize='small' /> : <ToggleOffIcon fontSize='small' />}
           </IconButton>
         </div>
       </TableCell>
