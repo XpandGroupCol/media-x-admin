@@ -18,11 +18,17 @@ export const HEADERS = [
   'Acciones'
 ]
 const UserRow = ({ row, onUpdate, onDelete }) => {
+  console.log({ row })
   return (
     <TableRow>
       <TableCell width='30%'>
         <div className={styles.row}>
-          <Avatar sx={{ width: 36, height: 36 }}>H</Avatar>
+          {row?.image
+            ? <Avatar sx={{ width: 36, height: 36 }} src={row?.image} />
+            : (
+              <Avatar sx={{ width: 36, height: 36, textTransform: 'uppercase' }}>
+                {row?.fullName.slice(0, 2)}
+              </Avatar>)}
           <div className={styles.info}>
             <Typography sx={{ fontWeight: 'bold' }}>{row.fullName}</Typography>
             <Typography component='span'>{row.email}</Typography>

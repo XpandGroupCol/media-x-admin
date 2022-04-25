@@ -17,7 +17,7 @@ import { useLists } from 'providers/listProvider'
 import { defaultValues, schema, setList } from './schema'
 import styles from './publisherForm.module.css'
 
-const PublisherForm = ({ publisher = defaultValues }) => {
+const PublisherForm = ({ publisher = defaultValues, edit = false }) => {
   const { formState: { errors }, handleSubmit, control } = useForm({
     defaultValues: { ...publisher },
     resolver: yupResolver(schema)
@@ -29,29 +29,46 @@ const PublisherForm = ({ publisher = defaultValues }) => {
 
   const [preview, setPreview] = useState(null)
 
-  const { loading, mutateHandler } = useMutateHandler()
+  const { loading, mutateWithImage, mutateHandler } = useMutateHandler()
 
   const onSuccess = useCallback(() => replace('/publishers'), [replace])
 
-  const onSubmit = ({ locations, ageRange, formats, objective, id = null, ...values }) => {
-    const body = {
+  const onSubmit = ({ locations, ageRange, formats, objective, id = null, sex, device, ...values }) => {
+    const payload = {
       ...values,
       locations: setList(locations),
       ageRange: setList(ageRange),
       formats: setList(formats),
-      objective: objective?.id
+      objective: objective?.id,
+      sex: sex?.id,
+      device: device?.id
     }
-
     const [path, method] = !id ? ['/publishers', 'POST'] : [`/publishers/${id}`, 'PUT']
 
-    mutateHandler({ path, method, body, onSuccess })
+    if (id) return mutateHandler({ path, method, body: payload, onSuccess })
+
+    if (preview?.image) payload.image = preview?.image
+
+    const body = new window.FormData()
+
+    Object.entries(payload).forEach(([key, value]) => {
+      if (Array.isArray(value)) {
+        value.forEach((v) => {
+          body.append(key, v)
+        })
+        return
+      }
+      body.append(key, value)
+    })
+
+    mutateWithImage({ path, method, body, onSuccess })
   }
 
   return (
 
     <form className={styles.form} onSubmit={handleSubmit(onSubmit)}>
       <Typography className={styles.title} align='center'>Publisher</Typography>
-      <UploadFile preview={preview} setPreview={setPreview} />
+      {!edit && <UploadFile preview={preview?.url} setPreview={setPreview} />}
       <ControllerField
         name='publisher'
         label='Nombres'

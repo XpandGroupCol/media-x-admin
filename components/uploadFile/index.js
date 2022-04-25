@@ -11,7 +11,10 @@ const UploadFile = ({ setPreview, preview }) => {
     if (image) {
       const reader = new window.FileReader()
       reader.onloadend = () => {
-        setPreview(reader.result)
+        setPreview({
+          url: reader.result,
+          image: image
+        })
       }
       reader.readAsDataURL(image)
     } else {

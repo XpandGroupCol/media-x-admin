@@ -17,7 +17,7 @@ import { useTheme } from '@emotion/react'
 import CloseIcon from '@mui/icons-material/Close'
 
 import UploadFile from 'components/uploadFile'
-import {useLists} from 'providers/listProvider'
+import { useLists } from 'providers/listProvider'
 
 const userForm = ({ open, onClose, onSuccess }) => {
   const { formState: { errors }, handleSubmit, control, reset } = useForm({
@@ -27,15 +27,23 @@ const userForm = ({ open, onClose, onSuccess }) => {
 
   const [preview, setPreview] = useState(null)
 
-  const { loading, mutateHandler } = useMutateHandler()
+  const { loading, mutateWithImage } = useMutateHandler()
   const theme = useTheme()
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'))
 
   const { roles = [] } = useLists()
 
   const onSubmit = ({ role, ...user }) => {
-    const body = { ...user, role: role.id }
-    mutateHandler({ path: '/users', method: 'POST', body, onSuccess })
+    const payload = { ...user, role: role.id }
+    if (preview?.image) payload.image = preview?.image
+
+    const body = new window.FormData()
+
+    Object.entries(payload).forEach(([key, value]) => {
+      body.append(key, value)
+    })
+
+    mutateWithImage({ path: '/users', method: 'POST', body, onSuccess })
   }
 
   useEffect(() => {
@@ -64,7 +72,7 @@ const userForm = ({ open, onClose, onSuccess }) => {
       </DialogTitle>
       <DialogContent className={styles.modalContent}>
         <form onSubmit={handleSubmit(onSubmit)}>
-          <UploadFile preview={preview} setPreview={setPreview} />
+          <UploadFile preview={preview?.url} setPreview={setPreview} />
           <section className={styles.section}>
             <ControllerField
               name='name'

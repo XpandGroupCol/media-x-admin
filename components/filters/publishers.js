@@ -1,6 +1,6 @@
 import InputSearch from 'components/input/searchInput'
 import Select from 'components/select'
-import {useLists} from 'providers/listProvider'
+import { useLists } from 'providers/listProvider'
 import useQueryParams from 'hooks/useQueryParams'
 
 const PublisherFilters = () => {

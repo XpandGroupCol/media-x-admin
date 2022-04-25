@@ -24,7 +24,12 @@ const PublisherRow = ({ row, onUpdate, onDelete }) => {
     <TableRow>
       <TableCell width='22%'>
         <div className={styles.row}>
-          <Avatar sx={{ width: 36, height: 36 }}>H</Avatar>
+          {row?.image
+            ? <Avatar sx={{ width: 36, height: 36 }} src={row?.image} />
+            : (
+              <Avatar sx={{ width: 36, height: 36, textTransform: 'uppercase' }}>
+                {row?.publisher.slice(0, 2)}
+              </Avatar>)}
           <div className={styles.info}>
             <Typography sx={{ fontWeight: 'bold' }}>{row.publisher}</Typography>
             <Typography component='span'>$ {getFormatedNumber(row.miniBudget)}</Typography>

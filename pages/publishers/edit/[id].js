@@ -24,7 +24,7 @@ const EditPublisher = () => {
 
   return (
 
-    <PublisherForm publisher={publisher} />
+    <PublisherForm publisher={publisher} edit />
 
   )
 }
