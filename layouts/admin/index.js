@@ -1,5 +1,4 @@
-import { useState } from 'react'
-import { useSession } from 'next-auth/react'
+import { useEffect, useState } from 'react'
 import classNames from 'classnames'
 
 import { Avatar, IconButton, Menu, MenuItem } from '@mui/material'
@@ -16,9 +15,11 @@ import DashboardIcon from '@mui/icons-material/Dashboard'
 
 import Typography from 'components/typography'
 import ActiveLink from 'components/activeLink'
-import useSignIn from 'hooks/useSignIn'
+import { useSession } from 'providers/sessionProvider'
 
 import styles from '../layout.module.css'
+import { useRouter } from 'next/router'
+import LoadingPage from 'components/loadingPage'
 
 const AdminLayout = ({ children }) => {
   const [showMenu, setShowMenu] = useState(false)
@@ -30,11 +31,20 @@ const AdminLayout = ({ children }) => {
   const handleClose = () =>
     setAnchorEl(null)
 
-  const { data } = useSession()
-  const { logout } = useSignIn()
+  const { data } = {}
 
   const handleShowMenu = () =>
     setShowMenu(prevValue => !prevValue)
+
+  const { session, logout } = useSession()
+
+  const { replace } = useRouter()
+
+  useEffect(() => {
+    if (session === null) replace('/auth/login')
+  }, [session, replace])
+
+  if (!session) return <LoadingPage />
 
   return (
     <div className={styles.page}>
@@ -124,11 +134,7 @@ const AdminLayout = ({ children }) => {
               'aria-labelledby': 'basic-button'
             }}
           >
-            <MenuItem onClick={() => {
-              handleClose()
-              logout()
-            }}
-            >
+            <MenuItem onClick={logout}>
               <LogoutIcon fontSize='20' />
               Cerrar sesion
             </MenuItem>

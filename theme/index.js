@@ -25,9 +25,6 @@ export const lightTheme = createTheme({
       disableElevation: true
     },
     styleOverrides: {
-      root: {
-        borderRadius: 10
-      }
     }
   }
 })

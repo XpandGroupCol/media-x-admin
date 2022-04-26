@@ -5,7 +5,7 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import Button from 'components/button'
 import Input from 'components/input'
 
-import styles from './login.module.css'
+import styles from '../auth.module.css'
 import useSignIn from 'hooks/useSignIn'
 
 import ControllerField from 'components/ControllerField'
@@ -19,8 +19,12 @@ const defaultValues = {
 }
 
 const schema = yup.object({
-  password: yup.string().required('Contraseña es requerido').min(8, 'Contraseña debe tener minimo 8 caracteres').max(15, 'Contraseña debe tener maximo 15 caracteres'),
-  email: yup.string().email('Ingrese un correo valido').required('Correo electronico es requerido')
+  password: yup.string().required('La contraseña es requerida.')
+    .min(8, 'Contraseña debe tener minimo 8 caracteres')
+    .max(15, 'Contraseña debe tener maximo 15 caracteres'),
+  email: yup.string()
+    .email('Ingrese un correo valido.')
+    .required('El correo electronico es requerido')
 }).required()
 
 export default function ForgotPassword () {
@@ -74,4 +78,10 @@ export default function ForgotPassword () {
   )
 }
 
-ForgotPassword.publicPage = true
+export async function getStaticProps (context) {
+  return {
+    props: {
+      protected: true
+    }
+  }
+}

@@ -1,17 +1,17 @@
 import axios from 'axios'
 
-export const signInWithCredentials = async (data) => {
+export const signInWithCredentials = async (payload) => {
   try {
-    const { data: user } = await axios(`${process.env.NEXT_PUBLIC_BASE_URL}/auth/admin`, {
+    const { data } = await axios(`${process.env.NEXT_PUBLIC_BASE_URL}/auth/admin-login`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         Accept: 'application/json'
       },
-      data
+      data: payload
     })
-    return user.data
+    return data
   } catch (e) {
-    return null
+    return Promise.reject(e)
   }
 }

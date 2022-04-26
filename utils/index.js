@@ -1,3 +1,4 @@
+
 export const areEqual = (prevData, nextData) => {
   return JSON.stringify(prevData.row) === JSON.stringify(nextData.row)
 }

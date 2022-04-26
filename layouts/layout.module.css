@@ -152,6 +152,14 @@
     cursor: pointer;
 }
 
+.auth {
+    display: flex;
+    min-height: 100vh;
+    justify-content: center;
+    background-color:#18005c;
+    align-items: center;
+}
+
 
 
 @media screen and (max-width:980px) {

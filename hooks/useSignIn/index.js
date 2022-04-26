@@ -1,10 +1,13 @@
-import { signIn, signOut } from 'next-auth/react'
+
 import { useRouter } from 'next/router'
 import { useNotification } from 'providers/notificationProvider'
+import { useSession } from 'providers/sessionProvider'
 import { useCallback, useState } from 'react'
+import { signInWithCredentials } from 'services/auth'
 
 const useSignIn = () => {
   const { notify } = useNotification()
+  const { setSession } = useSession()
 
   const [loading, setLoading] = useState(false)
 
@@ -13,16 +16,17 @@ const useSignIn = () => {
   const loginCrendentials = useCallback(async ({ email, password }) => {
     try {
       setLoading(true)
-      const { error, url } = await signIn('credentials', { redirect: false, callbackUrl: '/', email, password })
-      setLoading(false)
-      if (error) return notify({ message: error, type: 'error' })
-      router.push(url)
+      const { data: user } = await signInWithCredentials({ email, password })
+      setSession(user)
+      router.replace('/')
     } catch (error) {
       setLoading(false)
+      console.log({ error })
+      notify({ message: error?.response?.data?.message, type: 'error' })
     }
   }, [])
 
-  const logout = useCallback(() => signOut({ callbackUrl: '/auth/login' }), [])
+  const logout = useCallback(() => {}, [])
 
   return {
     loginCrendentials,

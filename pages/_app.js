@@ -1,47 +1,49 @@
-import { SessionProvider } from 'next-auth/react'
+
 import { SWRConfig } from 'swr'
 import { CssBaseline, ThemeProvider } from '@mui/material'
 import { LocalizationProvider } from '@mui/lab'
 import AdapterDateFns from '@mui/lab/AdapterDateFns'
 
 import NotificationProvider from 'providers/notificationProvider'
-import Private from 'layouts/private'
-import Public from 'layouts/public'
 
 import { lightTheme } from '../theme'
 import './globalStyles.css'
+import ListProvider from 'providers/listProvider'
+import SessionProvider from 'providers/sessionProvider'
+import { Admin, Auth } from 'layouts'
+import { fetcher } from 'utils/fetcher'
 
-function MyApp ({ Component, pageProps: { session, ...pageProps } }) {
+function MyApp ({ Component, pageProps }) {
   return (
-    <NotificationProvider>
-
-      <SessionProvider session={session}>
-        <SWRConfig value={{
-          fetcher: (resource, init) => window.fetch(resource, init).then(res => res.json()),
-          revalidateOnFocus: false
-        }}
-        >
-          <ThemeProvider theme={lightTheme}>
-            <LocalizationProvider dateAdapter={AdapterDateFns}>
-              <CssBaseline />
-              {
-              Component.publicPage
+    <ThemeProvider theme={lightTheme}>
+      <LocalizationProvider dateAdapter={AdapterDateFns}>
+        <NotificationProvider>
+          <SessionProvider>
+            <SWRConfig value={{
+              fetcher: (resource) => fetcher(resource).then(({ data }) => data),
+              revalidateOnFocus: false
+            }}
+            >
+              {pageProps.protected
                 ? (
-                  <Public>
+                  <Auth>
                     <Component {...pageProps} />
-                  </Public>
+                  </Auth>
                   )
                 : (
-                  <Private>
-                    <Component {...pageProps} />
-                  </Private>
-                  )
-            }
-            </LocalizationProvider>
-          </ThemeProvider>
-        </SWRConfig>
-      </SessionProvider>
-    </NotificationProvider>
+
+                  <Admin>
+                    <ListProvider>
+                      <Component {...pageProps} />
+                    </ListProvider>
+                  </Admin>
+                  )}
+            </SWRConfig>
+          </SessionProvider>
+          <CssBaseline />
+        </NotificationProvider>
+      </LocalizationProvider>
+    </ThemeProvider>
   )
 }
 

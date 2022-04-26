@@ -8,7 +8,7 @@ const Input = styled(({ InputProps, fullWidth, ...props }) => (
   '& .MuiFilledInput-root': {
     border: '1px solid #e2e2e1',
     overflow: 'hidden',
-    borderRadius: 10,
+    borderRadius: 4,
     backgroundColor: '#fff',
     transition: theme.transitions.create([
       'border-color',

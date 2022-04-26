@@ -1,6 +1,7 @@
 import { useNotification } from 'providers/notificationProvider'
 import { useCallback, useState } from 'react'
 import axios from 'axios'
+import { getAuth } from 'utils'
 const useMutateHandler = () => {
   const [loading, setLoading] = useState(false)
   const { notify } = useNotification()
@@ -14,7 +15,10 @@ const useMutateHandler = () => {
       setLoading(true)
       const { data } = await axios(`${process.env.NEXT_PUBLIC_BASE_URL}${path}`, {
         method,
-        headers,
+        headers: {
+          ...headers,
+          Authorization: `Bearer ${getAuth()}`
+        },
         data: body
       })
 
@@ -35,7 +39,10 @@ const useMutateHandler = () => {
       setLoading(true)
       const { data } = await axios(`${process.env.NEXT_PUBLIC_BASE_URL}${path}`, {
         method,
-        data: body
+        data: body,
+        headers: {
+          Authorization: `Bearer ${getAuth()}`
+        }
       })
 
       notify({ type: 'success', message: 'Registro creado/actualizado con exito.' })
