@@ -1,7 +1,7 @@
 .form {
     background: white;
     padding: 0 30px;
-    max-width: 700px;
+    max-width: 1000px;
     margin: auto;
     display: flex;
     flex-direction: column;
@@ -11,7 +11,29 @@
     border-radius: 10px;
     border: 1px solid rgba(224, 224, 224, 1);
 }
+.tableContainer{
+    width: 100%;
+    overflow-x: auto;
+    margin-bottom: 24px;
+}
 
+.added{
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.added > p {
+    font-weight: bold;
+    font-size: 20px;
+}
+
+.table{
+    width: 100%;
+    border-spacing: 5px 15px;
+    border-collapse: separate;
+    min-width: 800px;
+}
 .header{
     background: red;
     width: 100%;

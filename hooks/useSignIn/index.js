@@ -21,7 +21,6 @@ const useSignIn = () => {
       router.replace('/')
     } catch (error) {
       setLoading(false)
-      console.log({ error })
       notify({ message: error?.response?.data?.message, type: 'error' })
     }
   }, [])

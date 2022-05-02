@@ -18,7 +18,6 @@ export const HEADERS = [
   'Acciones'
 ]
 const UserRow = ({ row, onUpdate, onDelete }) => {
-  console.log({ row })
   return (
     <TableRow>
       <TableCell width='30%'>

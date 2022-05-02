@@ -1,7 +1,7 @@
 import { useNotification } from 'providers/notificationProvider'
 import { useCallback, useState } from 'react'
 import axios from 'axios'
-import { getAuth } from 'utils'
+import { getAuth } from 'utils/cookie'
 const useMutateHandler = () => {
   const [loading, setLoading] = useState(false)
   const { notify } = useNotification()

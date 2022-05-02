@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import { useForm } from 'react-hook-form'
+import { useFieldArray, useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 
 import Autocomplete from 'components/autocomplete'
@@ -13,9 +13,30 @@ import UploadFile from 'components/uploadFile'
 import useMutateHandler from 'hooks/useMutateHandler'
 
 import { useLists } from 'providers/listProvider'
-
+import CloseIcon from '@mui/icons-material/Close'
+import AddIcon from '@mui/icons-material/Add'
 import { defaultValues, schema, setList } from './schema'
 import styles from './publisherForm.module.css'
+import { IconButton } from '@mui/material'
+import { useSWRConfig } from 'swr'
+
+const setFormats = (data) => {
+  return data.map(({
+    format,
+    objective,
+    pricePerUnit,
+    biddingModel,
+    device
+  }) => {
+    return {
+      format: format?.id,
+      objective: objective?.id,
+      pricePerUnit,
+      biddingModel: biddingModel,
+      device: device
+    }
+  })
+}
 
 const PublisherForm = ({ publisher = defaultValues, edit = false }) => {
   const { formState: { errors }, handleSubmit, control } = useForm({
@@ -23,69 +44,89 @@ const PublisherForm = ({ publisher = defaultValues, edit = false }) => {
     resolver: yupResolver(schema)
   })
 
+  const { fields = [], append, remove } = useFieldArray({
+    control,
+    name: 'formats',
+    defaultValues: [{
+      format: null,
+      objective: null,
+      pricePerUnit: '',
+      biddingModel: null,
+      device: null
+    }]
+  })
+
   const { replace } = useRouter()
 
-  const { locations = [], formats = [], ages = [], objectives = [], sex = [], devices = [] } = useLists()
+  const { locations = [], formats = [], ages = [], objectives = [], sex = [], devices = [], biddingModel = [] } = useLists()
+  const { mutate } = useSWRConfig()
 
   const [preview, setPreview] = useState(null)
 
   const { loading, mutateWithImage, mutateHandler } = useMutateHandler()
 
-  const onSuccess = useCallback(() => replace('/publishers'), [replace])
+  const onSuccess = useCallback(({ data }) => {
+    publisher?.id && mutate(`${process.env.NEXT_PUBLIC_BASE_URL}/publishers/${publisher?.id}`, data)
+    replace('/publishers')
+  }, [replace, mutate, publisher])
 
-  const onSubmit = ({ locations, ageRange, formats, objective, id = null, sex, device, ...values }) => {
+  const onSubmit = ({ id, locations, ageRange, formats, ...values }) => {
     const payload = {
-      ...values,
       locations: setList(locations),
       ageRange: setList(ageRange),
-      formats: setList(formats),
-      objective: objective?.id,
-      sex: sex?.id,
-      device: device?.id
+      formats: setFormats(formats),
+      ...values
     }
+
     const [path, method] = !id ? ['/publishers', 'POST'] : [`/publishers/${id}`, 'PUT']
 
     if (id) return mutateHandler({ path, method, body: payload, onSuccess })
 
-    if (preview?.image) payload.image = preview?.image
-
     const body = new window.FormData()
 
-    Object.entries(payload).forEach(([key, value]) => {
-      if (Array.isArray(value)) {
-        value.forEach((v) => {
-          body.append(key, v)
-        })
-        return
-      }
-      body.append(key, value)
-    })
+    body.append('publisher', JSON.stringify(payload))
+    if (preview?.image) body.append('image', preview?.image)
 
     mutateWithImage({ path, method, body, onSuccess })
   }
 
-  return (
+  const handleAdded = () => {
+    append({
+      format: null,
+      objective: null,
+      pricePerUnit: '',
+      biddingModel: null,
+      device: null
+    })
+  }
 
+  const handleRemove = (index) => () => {
+    remove(index)
+  }
+
+  return (
     <form className={styles.form} onSubmit={handleSubmit(onSubmit)}>
       <Typography className={styles.title} align='center'>Publisher</Typography>
       {!edit && <UploadFile preview={preview?.url} setPreview={setPreview} />}
-      <ControllerField
-        name='publisher'
-        label='Nombres'
-        control={control}
-        element={Input}
-        error={Boolean(errors?.publisher?.message)}
-        helperText={errors?.publisher?.message}
-      />
-      <ControllerField
-        name='objective'
-        label='Objetivo'
-        control={control}
-        element={Autocomplete}
-        options={objectives}
-        error={Boolean(errors?.objective?.message)}
-        helperText={errors?.objective?.message}
-      />
+      <div className={styles.inputGroups}>
+        <ControllerField
+          name='publisher'
+          label='Nombres'
+          control={control}
+          element={Input}
+          error={Boolean(errors?.publisher?.message)}
+          helperText={errors?.publisher?.message}
+        />
+        <ControllerField
+          name='miniBudget'
+          label='Inversion minima'
+          control={control}
+          element={Input}
+          error={Boolean(errors?.miniBudget?.message)}
+          helperText={errors?.miniBudget?.message}
+        />
+
+      </div>
       <ControllerField
         name='locations'
         label='Ubicaciones'
@@ -96,46 +137,7 @@ const PublisherForm = ({ publisher = defaultValues, edit = false }) => {
         error={Boolean(errors?.locations?.message)}
         helperText={errors?.locations?.message}
       />
-      <ControllerField
-        name='formats'
-        label='Formatos'
-        multiple
-        control={control}
-        element={Autocomplete}
-        options={formats}
-        error={Boolean(errors?.formats?.message)}
-        helperText={errors?.formats?.message}
-      />
-      <span className={styles.divider} />
-      <div className={styles.inputGroups}>
-        <ControllerField
-          name='pricePerUnit'
-          label='Precio unitario'
-          control={control}
-          element={Input}
-          error={Boolean(errors?.pricePerUnit?.message)}
-          helperText={errors?.pricePerUnit?.message}
-        />
-        <ControllerField
-          name='miniBudget'
-          label='Inversion minima'
-          control={control}
-          element={Input}
-          error={Boolean(errors?.miniBudget?.message)}
-          helperText={errors?.miniBudget?.message}
-        />
-      </div>
 
-      <ControllerField
-        name='ageRange'
-        label='Rangos de edad'
-        control={control}
-        multiple
-        element={Autocomplete}
-        options={ages}
-        error={Boolean(errors?.ageRange?.message)}
-        helperText={errors?.ageRange?.message}
-      />
       <div className={styles.inputGroups}>
         <ControllerField
           name='sex'
@@ -146,17 +148,115 @@ const PublisherForm = ({ publisher = defaultValues, edit = false }) => {
           error={Boolean(errors?.sex?.message)}
           helperText={errors?.sex?.message}
         />
-
         <ControllerField
-          name='device'
-          label='Dispositivos'
+          name='ageRange'
+          label='Rango de edades'
           control={control}
           element={Autocomplete}
-          options={devices}
-          error={Boolean(errors?.device?.message)}
-          helperText={errors?.device?.message}
+          options={ages}
+          multiple
+          error={Boolean(errors?.ageRange?.message)}
+          helperText={errors?.ageRange?.message}
         />
       </div>
+      <span className={styles.divider} />
+
+      <div style={{ width: '100%' }}>
+        <div className={styles.added}>
+          <Typography>Formatos</Typography>
+          <Button variant='contained' color='secondary' size='small' onClick={handleAdded}>
+            <AddIcon />
+          </Button>
+        </div>
+        <div className={styles.tableContainer}>
+
+          <table className={styles.table}>
+            <thead>
+              <tr>
+                <th><Typography align='left'>Formato</Typography></th>
+                <th><Typography align='left'>Objetivo</Typography></th>
+                <th><Typography align='left'>Modelo</Typography></th>
+                <th><Typography align='left'>Dispositivo</Typography></th>
+                <th><Typography align='left'>Precio por unidad</Typography></th>
+                <th />
+              </tr>
+            </thead>
+            <tbody>
+              {
+                 fields.map(({
+                   id
+                 }, index) => (
+                   <tr key={id}>
+                     <td width='20%'>
+                       <ControllerField
+                         name={`formats.${index}.format`}
+                         label='Formato'
+                         control={control}
+                         element={Autocomplete}
+                         options={formats}
+                         error={Boolean(errors?.formats?.[index]?.format?.message)}
+                         helperText={`${errors?.formats?.[index]?.format?.message || ''}`}
+                       />
+                     </td>
+                     <td width='30%'>
+                       <ControllerField
+                         name={`formats.${index}.objective`}
+                         label='Objetivo'
+                         control={control}
+                         element={Autocomplete}
+                         options={objectives}
+                         error={Boolean(errors?.formats?.[index]?.objective?.message)}
+                         helperText={`${errors?.formats?.[index]?.objective?.message || ''}`}
+                       />
+
+                     </td>
+                     <td width='15%'>
+                       <ControllerField
+                         name={`formats.${index}.biddingModel`}
+                         label='Modelo'
+                         control={control}
+                         element={Autocomplete}
+                         options={biddingModel}
+                         error={Boolean(errors?.formats?.[index]?.biddingModel?.message)}
+                         helperText={`${errors?.formats?.[index]?.biddingModel?.message || ''}`}
+                       />
+
+                     </td>
+
+                     <td width='15%'>
+                       <ControllerField
+                         name={`formats.${index}.device`}
+                         label='Dispositivos'
+                         control={control}
+                         element={Autocomplete}
+                         options={devices}
+                         error={Boolean(errors?.formats?.[index]?.device?.message)}
+                         helperText={`${errors?.formats?.[index]?.device?.message || ''}`}
+                       />
+                     </td>
+                     <td width='15%'>
+                       <ControllerField
+                         name={`formats.${index}.pricePerUnit`}
+                         label='Precio unitario'
+                         control={control}
+                         element={Input}
+                         error={Boolean(errors?.formats?.[index]?.pricePerUnit?.message)}
+                         helperText={`${errors?.formats?.[index]?.pricePerUnit?.message || ''}`}
+                       />
+                     </td>
+                     <td>
+                       <IconButton size='small' className={styles.deleteIcon} onClick={handleRemove(index)}>
+                         <CloseIcon />
+                       </IconButton>
+                     </td>
+                   </tr>
+                 ))
+                }
+            </tbody>
+          </table>
+        </div>
+      </div>
+
       <div className={styles.buttons}>
         <Link href='/publishers'>
           <a>

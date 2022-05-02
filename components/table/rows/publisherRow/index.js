@@ -10,11 +10,8 @@ import Tooltip from 'components/tooltip'
 
 export const HEADERS = [
   'Publisher',
-  'Objetivo',
   'Ubicaciones',
-  'Formatos',
   'Rango de edad',
-  'Dispositivos',
   'Sexo',
   'Acciones'
 ]
@@ -22,7 +19,7 @@ export const HEADERS = [
 const PublisherRow = ({ row, onUpdate, onDelete }) => {
   return (
     <TableRow>
-      <TableCell width='22%'>
+      <TableCell width='30%'>
         <div className={styles.row}>
           {row?.image
             ? <Avatar sx={{ width: 36, height: 36 }} src={row?.image} />
@@ -33,24 +30,14 @@ const PublisherRow = ({ row, onUpdate, onDelete }) => {
           <div className={styles.info}>
             <Typography sx={{ fontWeight: 'bold' }}>{row.publisher}</Typography>
             <Typography component='span'>$ {getFormatedNumber(row.miniBudget)}</Typography>
-            <Typography component='span'>$ {getFormatedNumber(row.pricePerUnit)} c/u</Typography>
           </div>
         </div>
       </TableCell>
-      <TableCell width='12%'>
-        {row?.objective?.label}
-      </TableCell>
-      <TableCell width='12%'>
+      <TableCell width='15%'>
         <Tooltip text={getFormatedLists(row?.locations)} />
       </TableCell>
-      <TableCell width='12%'>
-        <Tooltip text={getFormatedLists(row?.formats)} />
-      </TableCell>
-      <TableCell width='12%'>
+      <TableCell width='25%'>
         <Tooltip text={getFormatedLists(row?.ageRange)} />
-      </TableCell>
-      <TableCell width='10%'>
-        {row?.device?.label}
       </TableCell>
       <TableCell width='10%'>
         {row?.sex?.label}

@@ -9,7 +9,7 @@ const EditPublisher = () => {
 
   const { notify } = useNotification()
 
-  const { data, error } = useSWR(`${process.env.NEXT_PUBLIC_BASE_URL}/publishers/${query?.id}`)
+  const { data, error } = useSWR(query?.id ? `${process.env.NEXT_PUBLIC_BASE_URL}/publishers/${query?.id}` : null)
 
   useEffect(() => {
     if (error) {
