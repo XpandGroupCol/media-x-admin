@@ -11,7 +11,7 @@ import Typography from 'components/typography'
 
 import SectorFilters from 'components/filters/lists'
 import ListRow, { HEADERS } from 'components/table/rows/listRow'
-import ListForm from 'components/forms/listForm'
+import LocationForm from 'components/forms/locationForm'
 import { useLists } from 'providers/listProvider'
 
 const Places = () => {
@@ -41,8 +41,8 @@ const Places = () => {
     mutateHandler({ onSuccess, method: 'DELETE', path, body })
   }
 
-  const onSubmit = ({ _id, name }) => {
-    const body = { name }
+  const onSubmit = ({ _id, name, country }) => {
+    const body = { name: name, country: country?.id }
     const path = _id ? `/locations/${_id}` : '/locations'
     const method = _id ? 'PUT' : 'POST'
     mutateHandler({ path, method, body, onSuccess })
@@ -76,7 +76,7 @@ const Places = () => {
         ))}
       </CustomTable>
 
-      <ListForm
+      <LocationForm
         open={Boolean(modalShow?.type === 'form')}
         onClose={handleSetRow()}
         onSuccess={onSuccess}

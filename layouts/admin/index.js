@@ -44,7 +44,9 @@ const AdminLayout = ({ children }) => {
     if (session === null) replace('/auth/login')
   }, [session, replace])
 
-  if (!session) return <LoadingPage />
+  if (session === undefined) return <LoadingPage />
+
+  if (session === null) return null
 
   return (
     <div className={styles.page}>

@@ -19,21 +19,22 @@ import { defaultValues, schema, setList } from './schema'
 import styles from './publisherForm.module.css'
 import { IconButton } from '@mui/material'
 import { useSWRConfig } from 'swr'
+import CurrencyInput from 'components/currencyInput'
 
 const setFormats = (data) => {
   return data.map(({
     format,
-    objective,
+    target,
     pricePerUnit,
     biddingModel,
     device
   }) => {
     return {
       format: format?.id,
-      objective: objective?.id,
+      target: target?.id,
       pricePerUnit,
-      biddingModel: biddingModel,
-      device: device
+      biddingModel: biddingModel?.id,
+      device: device?.id
     }
   })
 }
@@ -49,7 +50,7 @@ const PublisherForm = ({ publisher = defaultValues, edit = false }) => {
     name: 'formats',
     defaultValues: [{
       format: null,
-      objective: null,
+      target: null,
       pricePerUnit: '',
       biddingModel: null,
       device: null
@@ -58,7 +59,7 @@ const PublisherForm = ({ publisher = defaultValues, edit = false }) => {
 
   const { replace } = useRouter()
 
-  const { locations = [], formats = [], ages = [], objectives = [], sex = [], devices = [], biddingModel = [] } = useLists()
+  const { locations = [], formats = [], ages = [], targets = [], sex = [], devices = [], biddingModel = [], publisherCategory = [] } = useLists()
   const { mutate } = useSWRConfig()
 
   const [preview, setPreview] = useState(null)
@@ -70,11 +71,13 @@ const PublisherForm = ({ publisher = defaultValues, edit = false }) => {
     replace('/publishers')
   }, [replace, mutate, publisher])
 
-  const onSubmit = ({ id, locations, ageRange, formats, ...values }) => {
+  const onSubmit = ({ id, locations, ageRange, formats, sex, category, ...values }) => {
     const payload = {
       locations: setList(locations),
       ageRange: setList(ageRange),
       formats: setFormats(formats),
+      sex: sex?.id,
+      category: category?.id,
       ...values
     }
 
@@ -93,7 +96,7 @@ const PublisherForm = ({ publisher = defaultValues, edit = false }) => {
   const handleAdded = () => {
     append({
       format: null,
-      objective: null,
+      target: null,
       pricePerUnit: '',
       biddingModel: null,
       device: null
@@ -106,7 +109,7 @@ const PublisherForm = ({ publisher = defaultValues, edit = false }) => {
 
   return (
     <form className={styles.form} onSubmit={handleSubmit(onSubmit)}>
-      <Typography className={styles.title} align='center'>Publisher</Typography>
+      <Typography className={styles.title} align='center'>Nuevo Publisher</Typography>
       {!edit && <UploadFile preview={preview?.url} setPreview={setPreview} />}
       <div className={styles.inputGroups}>
         <ControllerField
@@ -121,7 +124,7 @@ const PublisherForm = ({ publisher = defaultValues, edit = false }) => {
           name='miniBudget'
           label='Inversion minima'
           control={control}
-          element={Input}
+          element={CurrencyInput}
           error={Boolean(errors?.miniBudget?.message)}
           helperText={errors?.miniBudget?.message}
         />
@@ -157,6 +160,15 @@ const PublisherForm = ({ publisher = defaultValues, edit = false }) => {
           multiple
           error={Boolean(errors?.ageRange?.message)}
           helperText={errors?.ageRange?.message}
+        />
+        <ControllerField
+          name='category'
+          label='Seleccione una categoria'
+          control={control}
+          element={Autocomplete}
+          options={publisherCategory}
+          error={Boolean(errors?.category?.message)}
+          helperText={errors?.category?.message}
         />
       </div>
       <span className={styles.divider} />
@@ -200,13 +212,13 @@ const PublisherForm = ({ publisher = defaultValues, edit = false }) => {
                      </td>
                      <td width='30%'>
                        <ControllerField
-                         name={`formats.${index}.objective`}
+                         name={`formats.${index}.target`}
                          label='Objetivo'
                          control={control}
                          element={Autocomplete}
-                         options={objectives}
-                         error={Boolean(errors?.formats?.[index]?.objective?.message)}
-                         helperText={`${errors?.formats?.[index]?.objective?.message || ''}`}
+                         options={targets}
+                         error={Boolean(errors?.formats?.[index]?.target?.message)}
+                         helperText={`${errors?.formats?.[index]?.target?.message || ''}`}
                        />
 
                      </td>
@@ -239,7 +251,7 @@ const PublisherForm = ({ publisher = defaultValues, edit = false }) => {
                          name={`formats.${index}.pricePerUnit`}
                          label='Precio unitario'
                          control={control}
-                         element={Input}
+                         element={CurrencyInput}
                          error={Boolean(errors?.formats?.[index]?.pricePerUnit?.message)}
                          helperText={`${errors?.formats?.[index]?.pricePerUnit?.message || ''}`}
                        />

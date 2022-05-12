@@ -2,8 +2,6 @@ import { useCallback, useState } from 'react'
 import AddIcon from '@mui/icons-material/Add'
 
 import ConfirmationModal from 'components/confirmationModal'
-import CreateUser from 'components/forms/createUserForm'
-import EditUser from 'components/forms/editUserForm'
 import Button from 'components/button'
 import CustomTable from 'components/table'
 import Typography from 'components/typography'
@@ -63,19 +61,6 @@ const Users = () => {
           />
         ))}
       </CustomTable>
-
-      <CreateUser
-        open={Boolean(modalShow?.type === 'create')}
-        onClose={handleSetRow()}
-        onSuccess={onSuccess}
-      />
-      <EditUser
-        open={Boolean(modalShow?.type === 'edit')}
-        onClose={handleSetRow()}
-        user={modalShow?.row}
-        onSuccess={onSuccess}
-
-      />
       <ConfirmationModal
         open={Boolean(modalShow?.type === 'delete')}
         onSubmit={onDelete}

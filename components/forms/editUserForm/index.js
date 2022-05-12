@@ -1,98 +1,195 @@
-import { useEffect } from 'react'
+import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 
 import Autocomplete from 'components/autocomplete'
+import Input from 'components/input'
 
 import ControllerField from 'components/ControllerField'
 import Button from 'components/button'
 
 import useMutateHandler from 'hooks/useMutateHandler'
 
-import { defaultValues, schema } from './schema'
-import styles from './userForm.module.css'
-import { Dialog, DialogActions, DialogContent, DialogTitle, IconButton, useMediaQuery } from '@mui/material'
-import { useTheme } from '@emotion/react'
-import CloseIcon from '@mui/icons-material/Close'
+import UploadFile from 'components/uploadFile'
+import Typography from 'components/typography'
 import { useLists } from 'providers/listProvider'
 
-const userForm = ({ open, onClose, user, onSuccess }) => {
-  const { formState: { errors }, handleSubmit, control, reset } = useForm({
-    defaultValues: user?.id ? { ...user } : { ...defaultValues },
+import styles from '../form.module.css'
+import Link from 'next/link'
+import { defaultValues, schema } from './schema'
+import PhoneInput from 'components/phoneInput'
+import { Checkbox, FormControlLabel } from '@mui/material'
+
+const CreateUserForm = ({ user = defaultValues }) => {
+  const { formState: { errors }, handleSubmit, control, setValue } = useForm({
+    defaultValues: { ...user },
     resolver: yupResolver(schema)
   })
 
-  const { roles = [], statuses = [] } = useLists()
+  const [preview, setPreview] = useState(null)
 
-  const { loading, mutateHandler } = useMutateHandler()
-  const theme = useTheme()
-  const fullScreen = useMediaQuery(theme.breakpoints.down('sm'))
+  const { loading, mutateWithImage } = useMutateHandler()
 
-  useEffect(() => {
-    if (open) reset(user?.id ? user : defaultValues)
-  }, [open])
+  const { roles = [] } = useLists()
 
-  const onSubmit = ({ role, status, id }) => {
-    const body = { role: role.id, status: status.id }
-    mutateHandler({ path: `/users/${id}`, method: 'PUT', body, onSuccess })
+  const onSubmit = ({ phone = '', phonePrefixed = '', role, id, fullName, ...user }) => {
+    const payload = {
+      ...user,
+      phone: phone,
+      phonePrefixed,
+      role: role?.id
+    }
+
+    if (preview?.image) payload.avatar = preview?.image
+
+    console.log({ payload })
+
+    const body = new window.FormData()
+
+    Object.entries(payload).forEach(([key, value]) => {
+      body.append(key, value ?? '')
+    })
+
+    mutateWithImage({ path: `/users/${id}`, method: 'PUT', body })
+      .then((data) => {
+        console.log({ data })
+      })
   }
 
+  console.log({ errors })
+
   return (
-
-    <Dialog
-      fullScreen={fullScreen}
-      open={open}
-      onClose={onClose}
-      aria-labelledby='responsive-dialog-title'
-      maxWidth='sm'
-      fullWidth
-    >
-
-      <DialogTitle id='responsive-dialog-title' className={styles.title}>
-        Editar usuario
-        <div className={styles.deleteIcon}>
-          <IconButton size='small' onClick={onClose}>
-            <CloseIcon fontSize='small' />
-          </IconButton>
+    <form className={styles.form} onSubmit={handleSubmit(onSubmit)}>
+      <Typography className={styles.title} align='center'>Editar usuario</Typography>
+      <UploadFile title='subir foto' preview={preview?.url} setPreview={setPreview} />
+      <ControllerField
+        name='name'
+        label='Nombres'
+        control={control}
+        element={Input}
+        error={Boolean(errors?.name?.message)}
+        helperText={errors?.name?.message}
+        inputProps={{ readOnly: true }}
+        disabled
+      />
+      <ControllerField
+        name='lastName'
+        label='Apellidos'
+        control={control}
+        element={Input}
+        error={Boolean(errors?.lastName?.message)}
+        helperText={errors?.lastName?.message}
+        inputProps={{ readOnly: true }}
+        disabled
+      />
+      <div className={styles.inputGroups}>
+        <ControllerField
+          name='email'
+          label='Correo electronico'
+          control={control}
+          type='email'
+          element={Input}
+          error={Boolean(errors?.email?.message)}
+          helperText={errors?.email?.message}
+          inputProps={{ readOnly: true }}
+          disabled
+        />
+        <div className={styles.inputGroups}>
+          <ControllerField
+            name='role'
+            label='Rol'
+            control={control}
+            element={Autocomplete}
+            options={roles}
+            error={Boolean(errors?.role?.message)}
+            helperText={errors?.role?.message}
+          />
         </div>
+      </div>
 
-      </DialogTitle>
-      <DialogContent className={styles.modalContent}>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <section className={styles.section}>
-            <ControllerField
-              name='status'
-              label='Estado'
-              control={control}
-              element={Autocomplete}
-              options={statuses}
-              error={Boolean(errors?.status?.message)}
-              helperText={errors?.status?.message}
-            />
-            <ControllerField
-              name='role'
-              label='Rol'
-              control={control}
-              element={Autocomplete}
-              options={roles}
-              error={Boolean(errors?.role?.message)}
-              helperText={errors?.role?.message}
-            />
-          </section>
-        </form>
-      </DialogContent>
-      <DialogActions className={styles.buttons}>
-        <Button variant='outlined' color='secondary' onClick={onClose}>
-          Cancelar
-        </Button>
-        <Button type='submit' loading={loading} onClick={handleSubmit(onSubmit)}>
-          Guardar
-        </Button>
-      </DialogActions>
+      <span className={styles.divider} />
+      <ControllerField
+        name='company'
+        label='Empresa'
+        control={control}
+        element={Input}
+        error={Boolean(errors?.company?.message)}
+        helperText={errors?.company?.message}
+      />
+      <div className={styles.inputGroups}>
+        <ControllerField
+          name='nit'
+          label='Nit'
+          control={control}
+          element={Input}
+          error={Boolean(errors?.nit?.message)}
+          helperText={errors?.nit?.message}
+        />
+        <ControllerField
+          name='address'
+          label='Dirección'
+          control={control}
+          element={Input}
+          error={Boolean(errors?.address?.message)}
+          helperText={errors?.address?.message}
+        />
+      </div>
+      <div className={styles.inputGroups}>
+        <ControllerField
+          name='companyEmail'
+          label='Correo electronico empresa'
+          type='email'
+          control={control}
+          element={Input}
+          error={Boolean(errors?.companyEmail?.message)}
+          helperText={errors?.companyEmail?.message}
+        />
+      </div>
+      <div className={styles.inputGroups}>
+        <ControllerField
+          name='phone'
+          label='Telefono'
+          control={control}
+          element={PhoneInput}
+          onChange={({ phone, dialCode }) => {
+            setValue('phone', phone, { shouldValidate: true })
+            setValue('phonePrefixed', dialCode, { shouldValidate: true })
+          }}
+          error={Boolean(errors?.phone?.message)}
+          helperText={errors?.phone?.message}
+        />
+        <ControllerField
+          name='percentage'
+          label='Porcentaje de comision'
+          control={control}
+          element={Input}
+          type='number'
+          error={Boolean(errors?.percentage?.message)}
+          helperText={errors?.percentage?.message}
+          InputProps={{
+            inputProps: {
+              max: 100, min: 1, step: '0.25'
+            }
+          }}
+        />
+      </div>
+      <div className={styles.buttons}>
+        <Link href='/users'>
+          <a>
+            <Button variant='outlined' color='secondary' size='large' className={styles.button}>
+              Cancelar
+            </Button>
+          </a>
+        </Link>
 
-    </Dialog>
+        <Button loading={loading} type='submit' variant='contained' color='primary' size='large' className={styles.button}>
+          Continuar
+        </Button>
+      </div>
+
+    </form>
 
   )
 }
 
-export default userForm
+export default CreateUserForm

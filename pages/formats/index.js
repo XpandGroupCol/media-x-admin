@@ -10,8 +10,8 @@ import CustomTable from 'components/table'
 import Typography from 'components/typography'
 
 import SectorFilters from 'components/filters/lists'
-import ListRow, { HEADERS } from 'components/table/rows/listRow'
-import ListForm from 'components/forms/listForm'
+import FormatRow, { HEADERS } from 'components/table/rows/formatRow'
+import FormatForm from 'components/forms/formatForm'
 import { useLists } from 'providers/listProvider'
 
 const Formats = () => {
@@ -41,10 +41,10 @@ const Formats = () => {
     mutateHandler({ onSuccess, method: 'DELETE', path, body })
   }
 
-  const onSubmit = ({ _id, name }) => {
-    const body = { name }
-    const path = _id ? `/formats/${_id}` : '/formats'
-    const method = _id ? 'PUT' : 'POST'
+  const onSubmit = ({ _id: id, type, ...values }) => {
+    const body = { ...values, type: type?.id, isVideo: type?.isVideo }
+    const path = id ? `/formats/${id}` : '/formats'
+    const method = id ? 'PUT' : 'POST'
     mutateHandler({ path, method, body, onSuccess })
   }
 
@@ -67,7 +67,7 @@ const Formats = () => {
         error={error}
       >
         {formats.map(row => (
-          <ListRow
+          <FormatRow
             key={row?._id}
             row={row}
             onUpdate={handleSetRow('form', row)}
@@ -76,7 +76,7 @@ const Formats = () => {
         ))}
       </CustomTable>
 
-      <ListForm
+      <FormatForm
         open={Boolean(modalShow?.type === 'form')}
         onClose={handleSetRow()}
         onSuccess={onSuccess}

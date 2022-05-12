@@ -21,7 +21,8 @@ const SessionProvider = ({ children }) => {
 
   const logout = useCallback(() => {
     cookie.remove('user')
-    router.reload()
+    setUser(null)
+    router.replace('/auth/login')
   }, [])
 
   const session = useMemo(() => user, [user])

@@ -14,7 +14,7 @@ export default function Auth ({ children }) {
     if (session) router.replace('/')
   }, [session, router])
 
-  if (session !== null) return <LoadingPage />
+  if (session === undefined) return <LoadingPage />
 
   return (
     <div className={styles.auth}>
