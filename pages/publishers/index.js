@@ -51,7 +51,6 @@ const Publishers = () => {
       <section className='section'>
         <PublisherFilters />
       </section>
-
       <CustomTable
         count={pages}
         headers={HEADERS}
@@ -67,7 +66,6 @@ const Publishers = () => {
           />
         ))}
       </CustomTable>
-
       <ConfirmationModal
         open={Boolean(modalShow?.type === 'delete')}
         onSubmit={onDelete}

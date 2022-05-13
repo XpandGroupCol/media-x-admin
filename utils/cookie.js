@@ -7,5 +7,5 @@ export const getAuth = () => {
 
 export const getSession = () => {
   const user = jsCookie.get('user')
-  return user ? JSON.stringify(user) : null
+  return user ? JSON.parse(user) : null
 }

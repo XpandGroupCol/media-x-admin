@@ -18,15 +18,18 @@ import styles from '../form.module.css'
 import Link from 'next/link'
 import { defaultValues, schema } from './schema'
 import PhoneInput from 'components/phoneInput'
-import { Checkbox, FormControlLabel } from '@mui/material'
+import Checkbox from 'components/checkbox'
+import InputFile from 'components/inputFile'
 
-const CreateUserForm = ({ edit }) => {
+const CreateUserForm = () => {
   const { formState: { errors }, handleSubmit, control, setValue } = useForm({
     defaultValues: { ...defaultValues },
     resolver: yupResolver(schema)
   })
 
   const [preview, setPreview] = useState(null)
+
+  const [uploadfile, setUploadfile] = useState(null)
 
   const { loading, mutateWithImage } = useMutateHandler()
 
@@ -42,6 +45,8 @@ const CreateUserForm = ({ edit }) => {
 
     if (preview?.image) payload.avatar = preview?.image
 
+    if (uploadfile?.image) payload.rut = uploadfile?.image
+
     const body = new window.FormData()
 
     Object.entries(payload).forEach(([key, value]) => {
@@ -54,11 +59,12 @@ const CreateUserForm = ({ edit }) => {
       })
   }
 
-  return (
+  console.log({ uploadfile })
 
+  return (
     <form className={styles.form} onSubmit={handleSubmit(onSubmit)}>
       <Typography className={styles.title} align='center'>Nuevo usuario</Typography>
-      {!edit && <UploadFile title='subir foto' preview={preview?.url} setPreview={setPreview} />}
+      <UploadFile title='subir foto' preview={preview?.url} setPreview={setPreview} />
       <ControllerField
         name='name'
         label='Nombres'
@@ -107,6 +113,7 @@ const CreateUserForm = ({ edit }) => {
           helperText={errors?.password?.message}
         />
       </div>
+      <Typography className={styles.title} align='center'>Perfil de empresa</Typography>
       <span className={styles.divider} />
       <ControllerField
         name='company'
@@ -135,10 +142,6 @@ const CreateUserForm = ({ edit }) => {
         />
       </div>
       <div className={styles.inputGroups}>
-        <FormControlLabel
-          className={styles.checkbox}
-          control={<Checkbox size='small' />} label='Usar el correo el mismo correo electronico'
-        />
         <ControllerField
           name='companyEmail'
           label='Correo electronico empresa'
@@ -177,6 +180,10 @@ const CreateUserForm = ({ edit }) => {
           }}
         />
       </div>
+      <div className={styles.rut}>
+        <Checkbox label='Validar el rut' size='small' />
+        <InputFile id='rut' onChange={setUploadfile} label='Subir rut' value={uploadfile?.name} />
+      </div>
       <div className={styles.buttons}>
         <Link href='/users'>
           <a>
@@ -185,14 +192,11 @@ const CreateUserForm = ({ edit }) => {
             </Button>
           </a>
         </Link>
-
         <Button loading={loading} type='submit' variant='contained' color='primary' size='large' className={styles.button}>
           Continuar
         </Button>
       </div>
-
     </form>
-
   )
 }
 

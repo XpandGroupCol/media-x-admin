@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import classNames from 'classnames'
 
-import { Avatar, IconButton, Menu, MenuItem } from '@mui/material'
+import { Avatar, Divider, IconButton, Menu, MenuItem } from '@mui/material'
 import MenuIcon from '@mui/icons-material/Menu'
 import PersonIcon from '@mui/icons-material/Person'
 import CampaignIcon from '@mui/icons-material/Campaign'
@@ -20,6 +20,7 @@ import { useSession } from 'providers/sessionProvider'
 import styles from '../layout.module.css'
 import { useRouter } from 'next/router'
 import LoadingPage from 'components/loadingPage'
+import Link from 'next/link'
 
 const AdminLayout = ({ children }) => {
   const [showMenu, setShowMenu] = useState(false)
@@ -30,8 +31,6 @@ const AdminLayout = ({ children }) => {
 
   const handleClose = () =>
     setAnchorEl(null)
-
-  const { data } = {}
 
   const handleShowMenu = () =>
     setShowMenu(prevValue => !prevValue)
@@ -84,7 +83,7 @@ const AdminLayout = ({ children }) => {
               Publishers
             </a>
           </ActiveLink>
-          <ActiveLink href='/objetives' activeClassName={styles.active}>
+          <ActiveLink href='/objectives' activeClassName={styles.active}>
             <a className={styles.link}>
               <GpsFixedIcon />
               Objetivos
@@ -122,10 +121,17 @@ const AdminLayout = ({ children }) => {
 
           <button onClick={handleClick} className={styles.logout}>
             <div>
-              <Typography>{data?.user?.name}</Typography>
-              <Typography sx={{ fontSize: 12, textAlign: 'right' }}>{data?.user?.role}</Typography>
+              <Typography sx={{
+                maxWidth: 180,
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap'
+              }}
+              >{session?.name}
+              </Typography>
+              <Typography sx={{ fontSize: 12, textAlign: 'right' }}>{session?.role}</Typography>
             </div>
-            <Avatar sx={{ width: 36, height: 36 }}>M</Avatar>
+            {session?.image ? <Avatar src={session?.image} sx={{ width: 36, height: 36 }} /> : <Avatar sx={{ width: 36, height: 36 }}>{session?.name?.slice(0, 2)?.toUpperCase()}</Avatar>}
           </button>
           <Menu
             id='basic-menu'
@@ -135,9 +141,21 @@ const AdminLayout = ({ children }) => {
             MenuListProps={{
               'aria-labelledby': 'basic-button'
             }}
+            anchorOrigin={{ horizontal: 'center', vertical: 'bottom' }}
+            className={styles.menu}
           >
+
+            <Link href='/profile'>
+              <a>
+                <MenuItem>
+                  <PersonIcon fontSize='small' sx={{ marginRight: '10px' }} />
+                  Perfil
+                </MenuItem>
+              </a>
+            </Link>
+            <Divider />
             <MenuItem onClick={logout}>
-              <LogoutIcon fontSize='20' />
+              <LogoutIcon fontSize='small' sx={{ marginRight: '10px' }} />
               Cerrar sesion
             </MenuItem>
           </Menu>

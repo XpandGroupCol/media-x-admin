@@ -10,6 +10,7 @@ import UserFilters from 'components/filters/user'
 
 import useMutateHandler from 'hooks/useMutateHandler'
 import useGetData from 'hooks/useGetData'
+import Link from 'next/link'
 
 const Users = () => {
   const [modalShow, setModalShow] = useState({ type: '', row: null })
@@ -38,9 +39,13 @@ const Users = () => {
     <>
       <section className='header'>
         <Typography component='h1' color='secondary'>Usuarios</Typography>
-        <Button size='small' onClick={handleSetRow('create')}>
-          <AddIcon />  Usuario
-        </Button>
+        <Link href='/users/create'>
+          <a>
+            <Button size='small'>
+              <AddIcon />  Ususario
+            </Button>
+          </a>
+        </Link>
       </section>
       <section className='section'>
         <UserFilters />

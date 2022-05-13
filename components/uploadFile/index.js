@@ -5,7 +5,7 @@ import CloudUploadIcon from '@mui/icons-material/CloudUpload'
 import Button from 'components/button'
 import styles from './uploadFile.module.css'
 
-const UploadFile = ({ setPreview, preview, title = 'Subir logo' }) => {
+const UploadFile = ({ setPreview, preview, title = 'Subir logo', id = 'test' }) => {
   const [image, setImage] = useState(null)
   useEffect(() => {
     if (image) {
@@ -39,8 +39,8 @@ const UploadFile = ({ setPreview, preview, title = 'Subir logo' }) => {
                 </div>)
           }
       <Button size='small' color='primary'>
-        <label htmlFor='contained-button-file'>
-          <input className={styles.inputFile} type='file' accept='image/*' id='contained-button-file' onChange={handleSetImage} />
+        <label htmlFor={id}>
+          <input className={styles.inputFile} type='file' accept='image/*' id={id} onChange={handleSetImage} />
           {title}
         </label>
       </Button>
