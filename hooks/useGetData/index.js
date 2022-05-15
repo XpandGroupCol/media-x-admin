@@ -1,6 +1,7 @@
 import { useRouter } from 'next/router'
 import { useMemo } from 'react'
 import useSWR from 'swr'
+import { BASE_URL } from 'utils/constants'
 
 const useGetData = (path) => {
   const { query } = useRouter()
@@ -11,7 +12,7 @@ const useGetData = (path) => {
     return queryParams ? `?${queryParams}` : ''
   }, [query])
 
-  const { data, error, mutate } = useSWR(`${process.env.NEXT_PUBLIC_BASE_URL}${path}${params}`)
+  const { data, error, mutate } = useSWR(`${BASE_URL}${path}${params}`)
 
   return {
     data,

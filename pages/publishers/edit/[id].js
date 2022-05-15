@@ -1,11 +1,12 @@
 import { useRouter } from 'next/router'
 import useSWR from 'swr'
 import PublisherForm from 'components/forms/editPublisherForm'
+import { BASE_URL } from 'utils/constants'
 
 const EditPublisher = () => {
   const { query } = useRouter()
 
-  const { data, error } = useSWR(query?.id ? `${process.env.NEXT_PUBLIC_BASE_URL}/publishers/${query?.id}` : null)
+  const { data, error } = useSWR(query?.id ? `${BASE_URL}/publishers/${query?.id}` : null)
 
   if (!data && !error) return <p>loading.....</p>
 

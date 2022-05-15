@@ -16,28 +16,12 @@ import { useLists } from 'providers/listProvider'
 import CloseIcon from '@mui/icons-material/Close'
 import AddIcon from '@mui/icons-material/Add'
 import { defaultValues, schema } from './schema'
-import styles from './publisherForm.module.css'
+import styles from '../form.module.css'
 import { IconButton } from '@mui/material'
 import { useSWRConfig } from 'swr'
 import CurrencyInput from 'components/currencyInput'
-
-const setFormats = (data) => {
-  return data.map(({
-    format,
-    target,
-    pricePerUnit,
-    biddingModel,
-    device
-  }) => {
-    return {
-      format: format?.id,
-      target: target?.id,
-      pricePerUnit,
-      biddingModel: biddingModel?.id,
-      device: device?.id
-    }
-  })
-}
+import { getFormats } from 'utils'
+import { BASE_URL } from 'utils/constants'
 
 const PublisherForm = ({ publisher = defaultValues, edit = false }) => {
   const { formState: { errors }, handleSubmit, control } = useForm({
@@ -62,18 +46,18 @@ const PublisherForm = ({ publisher = defaultValues, edit = false }) => {
   const { locations = [], formats = [], ages = [], targets = [], sex = [], devices = [], biddingModel = [], publisherCategory = [] } = useLists()
   const { mutate } = useSWRConfig()
 
-  const { loading, mutateWithImage, mutateHandler } = useMutateHandler()
+  const { loading, mutateWithImage } = useMutateHandler()
 
   const onSuccess = useCallback(({ data }) => {
-    // publisher?.id && mutate(`${process.env.NEXT_PUBLIC_BASE_URL}/publishers/${publisher?.id}`, data)
+    // publisher?.id && mutate(`${BASE_URL}/publishers/${publisher?.id}`, data)
     // replace('/publishers')
   }, [replace, mutate, publisher])
 
-  const onSubmit = ({ id, ...values }) => {
+  const onSubmit = (values) => {
     const formData = new window.FormData()
 
     const { formats } = values
-    const _formats = setFormats(formats)
+    const _formats = getFormats(formats)
 
     Object.entries(values).forEach(([key, value]) => {
       if (key === 'locations' || key === 'ageRange') {
@@ -102,11 +86,7 @@ const PublisherForm = ({ publisher = defaultValues, edit = false }) => {
       formData.append(key, value ?? '')
     })
 
-    const [path, method] = !id ? ['/publishers', 'POST'] : [`/publishers/${id}`, 'PUT']
-
-    if (id) return mutateHandler({ path, method, body: formData, onSuccess })
-
-    mutateWithImage({ path, method, body: formData, onSuccess })
+    mutateWithImage({ path: '/publishers', method: 'POST', body: formData, onSuccess })
   }
 
   const handleAdded = () => {

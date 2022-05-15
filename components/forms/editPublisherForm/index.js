@@ -15,10 +15,11 @@ import { useLists } from 'providers/listProvider'
 import CloseIcon from '@mui/icons-material/Close'
 import AddIcon from '@mui/icons-material/Add'
 import { defaultValues, schema, setList } from './schema'
-import styles from './publisherForm.module.css'
+import styles from '../form.module.css'
 import { Avatar, IconButton } from '@mui/material'
 import { useSWRConfig } from 'swr'
 import CurrencyInput from 'components/currencyInput'
+import { BASE_URL } from 'utils/constants'
 
 const setFormats = (data) => {
   return data.map(({
@@ -64,7 +65,7 @@ const PublisherForm = ({ publisher = defaultValues, edit = false }) => {
   const { loading, mutateHandler } = useMutateHandler()
 
   const onSuccess = useCallback(({ data }) => {
-    // publisher?.id && mutate(`${process.env.NEXT_PUBLIC_BASE_URL}/publishers/${publisher?.id}`, data)
+    // publisher?.id && mutate(`${BASE_URL}/publishers/${publisher?.id}`, data)
     // replace('/publishers')
   }, [replace, mutate, publisher])
 

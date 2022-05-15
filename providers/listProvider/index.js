@@ -1,11 +1,12 @@
 
 import { createContext, useCallback, useContext, useMemo } from 'react'
 import useSWR from 'swr'
+import { BASE_URL } from 'utils/constants'
 
 const ListContext = createContext()
 
 const ListProvider = ({ children }) => {
-  const { data = {}, mutate } = useSWR(`${process.env.NEXT_PUBLIC_BASE_URL}/lists`)
+  const { data = {}, mutate } = useSWR(`${BASE_URL}/lists`)
 
   const refreshLists = useCallback(() => mutate(data, { revalidate: true }))
 

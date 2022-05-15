@@ -11,3 +11,21 @@ export const getFormatedLists = (list = []) => list?.map(({ label }) => label).j
 export const getEllipse = (text) => {
   return text.length > 40 ? `${text.slice(0, 40)}...` : text
 }
+
+export const getFormats = (data) => {
+  return data.map(({
+    format,
+    target,
+    pricePerUnit,
+    biddingModel,
+    device
+  }) => {
+    return {
+      format: format?.id,
+      target: target?.id,
+      pricePerUnit,
+      biddingModel: biddingModel?.id,
+      device: device?.id
+    }
+  })
+}

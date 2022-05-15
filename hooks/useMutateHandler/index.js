@@ -2,6 +2,7 @@ import { useNotification } from 'providers/notificationProvider'
 import { useCallback, useState } from 'react'
 import axios from 'axios'
 import { getAuth } from 'utils/cookie'
+import { BASE_URL } from 'utils/constants'
 const useMutateHandler = () => {
   const [loading, setLoading] = useState(false)
   const { notify } = useNotification()
@@ -13,7 +14,7 @@ const useMutateHandler = () => {
   }) => {
     try {
       setLoading(true)
-      const { data } = await axios(`${process.env.NEXT_PUBLIC_BASE_URL}${path}`, {
+      const { data } = await axios(`${BASE_URL}${path}`, {
         method,
         headers: {
           ...headers,
@@ -37,7 +38,7 @@ const useMutateHandler = () => {
   }) => {
     try {
       setLoading(true)
-      const { data } = await axios(`${process.env.NEXT_PUBLIC_BASE_URL}${path}`, {
+      const { data } = await axios(`${BASE_URL}${path}`, {
         method,
         data: body,
         headers: {
