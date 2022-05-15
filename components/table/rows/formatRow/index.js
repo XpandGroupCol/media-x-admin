@@ -15,7 +15,6 @@ export const HEADERS = [
   'Acciones'
 ]
 const FormatRow = ({ row, onUpdate, onDelete }) => {
-  console.log({ row })
   return (
     <TableRow>
       <TableCell>

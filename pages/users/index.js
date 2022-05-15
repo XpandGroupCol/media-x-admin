@@ -40,11 +40,9 @@ const Users = () => {
       <section className='header'>
         <Typography component='h1' color='secondary'>Usuarios</Typography>
         <Link href='/users/create'>
-          <a>
-            <Button size='small'>
-              <AddIcon />  Ususario
-            </Button>
-          </a>
+          <Button size='small' component='a'>
+            <AddIcon />  Usuario
+          </Button>
         </Link>
       </section>
       <section className='section'>

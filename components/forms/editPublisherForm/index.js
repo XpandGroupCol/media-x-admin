@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react'
+import { useCallback } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useFieldArray, useForm } from 'react-hook-form'
@@ -9,7 +9,6 @@ import Input from 'components/input'
 import ControllerField from 'components/ControllerField'
 import Button from 'components/button'
 import Typography from 'components/typography'
-import UploadFile from 'components/uploadFile'
 import useMutateHandler from 'hooks/useMutateHandler'
 
 import { useLists } from 'providers/listProvider'
@@ -17,7 +16,7 @@ import CloseIcon from '@mui/icons-material/Close'
 import AddIcon from '@mui/icons-material/Add'
 import { defaultValues, schema, setList } from './schema'
 import styles from './publisherForm.module.css'
-import { IconButton } from '@mui/material'
+import { Avatar, IconButton } from '@mui/material'
 import { useSWRConfig } from 'swr'
 import CurrencyInput from 'components/currencyInput'
 
@@ -62,35 +61,24 @@ const PublisherForm = ({ publisher = defaultValues, edit = false }) => {
   const { locations = [], formats = [], ages = [], targets = [], sex = [], devices = [], biddingModel = [], publisherCategory = [] } = useLists()
   const { mutate } = useSWRConfig()
 
-  const [preview, setPreview] = useState(null)
-
-  const { loading, mutateWithImage, mutateHandler } = useMutateHandler()
+  const { loading, mutateHandler } = useMutateHandler()
 
   const onSuccess = useCallback(({ data }) => {
-    publisher?.id && mutate(`${process.env.NEXT_PUBLIC_BASE_URL}/publishers/${publisher?.id}`, data)
-    replace('/publishers')
+    // publisher?.id && mutate(`${process.env.NEXT_PUBLIC_BASE_URL}/publishers/${publisher?.id}`, data)
+    // replace('/publishers')
   }, [replace, mutate, publisher])
 
-  const onSubmit = ({ id, locations, ageRange, formats, sex, category, ...values }) => {
+  const onSubmit = ({ id, locations, ageRange, sex, category, formats, ...values }) => {
     const payload = {
+      ...values,
       locations: setList(locations),
       ageRange: setList(ageRange),
-      formats: setFormats(formats),
       sex: sex?.id,
       category: category?.id,
-      ...values
+      formats: setFormats(formats)
     }
 
-    const [path, method] = !id ? ['/publishers', 'POST'] : [`/publishers/${id}`, 'PUT']
-
-    if (id) return mutateHandler({ path, method, body: payload, onSuccess })
-
-    const body = new window.FormData()
-
-    body.append('publisher', JSON.stringify(payload))
-    if (preview?.image) body.append('image', preview?.image)
-
-    mutateWithImage({ path, method, body, onSuccess })
+    mutateHandler({ path: `/publishers/${id}`, method: 'PUT', body: payload, onSuccess })
   }
 
   const handleAdded = () => {
@@ -109,8 +97,12 @@ const PublisherForm = ({ publisher = defaultValues, edit = false }) => {
 
   return (
     <form className={styles.form} onSubmit={handleSubmit(onSubmit)}>
-      <Typography className={styles.title} align='center'>Nuevo Publisher</Typography>
-      {!edit && <UploadFile preview={preview?.url} setPreview={setPreview} />}
+      <Typography className={styles.title} align='center'>Editar Publisher</Typography>
+
+      <div className={styles.avatar}>
+        <Avatar src={publisher?.logo} sx={{ width: 90, height: 90 }} />
+      </div>
+
       <div className={styles.inputGroups}>
         <ControllerField
           name='publisher'

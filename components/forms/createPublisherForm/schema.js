@@ -5,6 +5,7 @@ export const defaultValues = {
   publisher: '',
   locations: [],
   ageRange: [],
+  image: null,
   sex: null,
   miniBudget: null,
   category: null,

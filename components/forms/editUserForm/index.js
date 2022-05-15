@@ -10,7 +10,6 @@ import Button from 'components/button'
 
 import useMutateHandler from 'hooks/useMutateHandler'
 
-import UploadFile from 'components/uploadFile'
 import Typography from 'components/typography'
 import { useLists } from 'providers/listProvider'
 
@@ -18,7 +17,9 @@ import styles from '../form.module.css'
 import Link from 'next/link'
 import { defaultValues, schema } from './schema'
 import PhoneInput from 'components/phoneInput'
-import { Checkbox, FormControlLabel } from '@mui/material'
+import Checkbox from 'components/checkbox'
+import VisibilityIcon from '@mui/icons-material/Visibility'
+import { Avatar } from '@mui/material'
 
 const CreateUserForm = ({ user = defaultValues }) => {
   const { formState: { errors }, handleSubmit, control, setValue } = useForm({
@@ -26,42 +27,28 @@ const CreateUserForm = ({ user = defaultValues }) => {
     resolver: yupResolver(schema)
   })
 
-  const [preview, setPreview] = useState(null)
-
-  const { loading, mutateWithImage } = useMutateHandler()
+  const { loading, mutateHandler } = useMutateHandler()
 
   const { roles = [] } = useLists()
 
   const onSubmit = ({ phone = '', phonePrefixed = '', role, id, fullName, ...user }) => {
-    const payload = {
+    const body = {
       ...user,
       phone: phone,
       phonePrefixed,
       role: role?.id
     }
 
-    if (preview?.image) payload.avatar = preview?.image
-
-    console.log({ payload })
-
-    const body = new window.FormData()
-
-    Object.entries(payload).forEach(([key, value]) => {
-      body.append(key, value ?? '')
-    })
-
-    mutateWithImage({ path: `/users/${id}`, method: 'PUT', body })
-      .then((data) => {
-        console.log({ data })
-      })
+    mutateHandler({ path: `/users/${id}`, method: 'PUT', body })
   }
-
-  console.log({ errors })
 
   return (
     <form className={styles.form} onSubmit={handleSubmit(onSubmit)}>
-      <Typography className={styles.title} align='center'>Editar usuario</Typography>
-      <UploadFile title='subir foto' preview={preview?.url} setPreview={setPreview} />
+      <Typography className={styles.title} align='center'>Nuevo usuario</Typography>
+      <div className={styles.avatar}>
+        <Avatar src={user?.avatar} sx={{ width: 90, height: 90 }} />
+      </div>
+
       <ControllerField
         name='name'
         label='Nombres'
@@ -69,7 +56,6 @@ const CreateUserForm = ({ user = defaultValues }) => {
         element={Input}
         error={Boolean(errors?.name?.message)}
         helperText={errors?.name?.message}
-        inputProps={{ readOnly: true }}
         disabled
       />
       <ControllerField
@@ -79,7 +65,6 @@ const CreateUserForm = ({ user = defaultValues }) => {
         element={Input}
         error={Boolean(errors?.lastName?.message)}
         helperText={errors?.lastName?.message}
-        inputProps={{ readOnly: true }}
         disabled
       />
       <div className={styles.inputGroups}>
@@ -91,23 +76,21 @@ const CreateUserForm = ({ user = defaultValues }) => {
           element={Input}
           error={Boolean(errors?.email?.message)}
           helperText={errors?.email?.message}
-          inputProps={{ readOnly: true }}
           disabled
         />
-        <div className={styles.inputGroups}>
-          <ControllerField
-            name='role'
-            label='Rol'
-            control={control}
-            element={Autocomplete}
-            options={roles}
-            error={Boolean(errors?.role?.message)}
-            helperText={errors?.role?.message}
-          />
-        </div>
+        <ControllerField
+          name='role'
+          label='Rol'
+          control={control}
+          element={Autocomplete}
+          options={roles}
+          error={Boolean(errors?.role?.message)}
+          helperText={errors?.role?.message}
+        />
       </div>
 
       <span className={styles.divider} />
+      <Typography className={styles.subtitle} align='left'>Perfil de empresa</Typography>
       <ControllerField
         name='company'
         label='Empresa'
@@ -173,6 +156,23 @@ const CreateUserForm = ({ user = defaultValues }) => {
           }}
         />
       </div>
+      <div className={styles.rut}>
+        {user?.rut
+          ? (
+            <a href={`${user?.rut}`} target='blank' className={styles.showRut}>
+              <VisibilityIcon fontSize='small' />
+              Ver rut
+            </a>)
+          : <span>No hay documento</span>}
+        <ControllerField
+          name='checkRut'
+          label='Validar el rut'
+          control={control}
+          element={Checkbox}
+          size='small'
+          disabled={!user?.rut}
+        />
+      </div>
       <div className={styles.buttons}>
         <Link href='/users'>
           <a>
@@ -181,14 +181,11 @@ const CreateUserForm = ({ user = defaultValues }) => {
             </Button>
           </a>
         </Link>
-
         <Button loading={loading} type='submit' variant='contained' color='primary' size='large' className={styles.button}>
           Continuar
         </Button>
       </div>
-
     </form>
-
   )
 }
 

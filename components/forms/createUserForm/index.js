@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 
@@ -27,44 +26,36 @@ const CreateUserForm = () => {
     resolver: yupResolver(schema)
   })
 
-  const [preview, setPreview] = useState(null)
-
-  const [uploadfile, setUploadfile] = useState(null)
-
   const { loading, mutateWithImage } = useMutateHandler()
 
   const { roles = [] } = useLists()
 
-  const onSubmit = ({ phone = '', phonePrefixed = '', role, ...user }) => {
+  const onSubmit = ({ role, ...user }) => {
     const payload = {
       ...user,
-      phone: phonePrefixed && phone ? phone?.slice(phonePrefixed.length) : '',
-      phonePrefixed,
       role: role?.id
     }
-
-    if (preview?.image) payload.avatar = preview?.image
-
-    if (uploadfile?.image) payload.rut = uploadfile?.image
 
     const body = new window.FormData()
 
     Object.entries(payload).forEach(([key, value]) => {
-      body.append(key, value)
+      body.append(key, value ?? '')
     })
 
     mutateWithImage({ path: '/users', method: 'POST', body })
-      .then((data) => {
-        console.log({ data })
-      })
   }
-
-  console.log({ uploadfile })
 
   return (
     <form className={styles.form} onSubmit={handleSubmit(onSubmit)}>
       <Typography className={styles.title} align='center'>Nuevo usuario</Typography>
-      <UploadFile title='subir foto' preview={preview?.url} setPreview={setPreview} />
+      <ControllerField
+        name='avatar'
+        label='Subir avatar'
+        control={control}
+        element={UploadFile}
+        id='upload-avatar'
+      />
+
       <ControllerField
         name='name'
         label='Nombres'
@@ -113,8 +104,8 @@ const CreateUserForm = () => {
           helperText={errors?.password?.message}
         />
       </div>
-      <Typography className={styles.title} align='center'>Perfil de empresa</Typography>
       <span className={styles.divider} />
+      <Typography className={styles.subtitle} align='left'>Perfil de empresa</Typography>
       <ControllerField
         name='company'
         label='Empresa'
@@ -181,8 +172,22 @@ const CreateUserForm = () => {
         />
       </div>
       <div className={styles.rut}>
-        <Checkbox label='Validar el rut' size='small' />
-        <InputFile id='rut' onChange={setUploadfile} label='Subir rut' value={uploadfile?.name} />
+
+        <ControllerField
+          name='rut'
+          label='Subir rut'
+          control={control}
+          element={InputFile}
+          id='upload-rut'
+        />
+
+        <ControllerField
+          name='checkRut'
+          label='Validar el rut'
+          control={control}
+          element={Checkbox}
+          size='small'
+        />
       </div>
       <div className={styles.buttons}>
         <Link href='/users'>

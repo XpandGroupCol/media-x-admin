@@ -40,11 +40,9 @@ const Publishers = () => {
       <section className='header'>
         <Typography component='h1' color='secondary'>Publishers</Typography>
         <Link href='/publishers/create'>
-          <a>
-            <Button size='small'>
-              <AddIcon />  Publisher
-            </Button>
-          </a>
+          <Button size='small' component='a'>
+            <AddIcon />  Publisher
+          </Button>
         </Link>
 
       </section>

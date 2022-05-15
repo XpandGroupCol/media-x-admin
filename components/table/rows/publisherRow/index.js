@@ -45,11 +45,9 @@ const PublisherRow = ({ row, onUpdate, onDelete }) => {
       <TableCell width='10%'>
         <div className={styles.row}>
           <Link href={`publishers/edit/${row?.id}`}>
-            <a>
-              <IconButton size='small' onClick={onUpdate}>
-                <EditIcon fontSize='small' />
-              </IconButton>
-            </a>
+            <IconButton size='small' onClick={onUpdate} component='a'>
+              <EditIcon fontSize='small' />
+            </IconButton>
           </Link>
           <IconButton size='small' onClick={onDelete} sx={{ color: !row.status ? '#ff4842' : '#54d62c' }}>
             {!row.status ? <ToggleOnIcon fontSize='small' /> : <ToggleOffIcon fontSize='small' />}

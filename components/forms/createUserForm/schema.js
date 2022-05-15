@@ -13,8 +13,10 @@ export const defaultValues = {
   phone: '',
   address: '',
   companyEmail: '',
-  rut: '',
-  percentage: 15
+  rut: null,
+  avatar: null,
+  percentage: 15,
+  checkRut: false
 }
 
 export const schema = yup.object({
@@ -29,6 +31,5 @@ export const schema = yup.object({
   phone: yup.string(),
   address: yup.string(),
   companyEmail: yup.string(),
-  rut: yup.object().nullable(),
   percentage: yup.number().typeError('Porcentaje debe ser un numero').min(1, 'El valor minimo debe ser 1').max(100, 'El valor maximo debe ser 100').nullable().required('Porcentaje es requerido')
 }).required()

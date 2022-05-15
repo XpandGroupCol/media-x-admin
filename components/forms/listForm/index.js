@@ -8,7 +8,7 @@ import ControllerField from 'components/ControllerField'
 import Button from 'components/button'
 
 import { defaultValues, schema } from './schema'
-import styles from './userForm.module.css'
+import styles from '../form.module.css'
 import { Dialog, DialogActions, DialogContent, DialogTitle, IconButton, useMediaQuery } from '@mui/material'
 import { useTheme } from '@emotion/react'
 import CloseIcon from '@mui/icons-material/Close'

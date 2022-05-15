@@ -7,6 +7,7 @@ import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline'
 import StatusTag from 'components/statusTag'
 import styles from '../rows.module.css'
 import { areEqual } from 'utils'
+import Link from 'next/link'
 
 export const HEADERS = [
   'Name',
@@ -52,13 +53,14 @@ const UserRow = ({ row, onUpdate, onDelete }) => {
       </TableCell>
 
       <TableCell width='10%' align='center'>
+        <div className={styles.row}>
+          <Link href={`users/edit/${row?.id}`}>
+            <IconButton size='small' onClick={onUpdate} component='a'>
+              <EditIcon fontSize='small' />
+            </IconButton>
+          </Link>
 
-        <IconButton size='small' onClick={onUpdate}>
-          <EditIcon fontSize='small' />
-        </IconButton>
-        {/* <IconButton size='small' onClick={onDelete} disabled={row?.status?.id === 'inactive'}>
-            <DeleteIcon fontSize='small' />
-          </IconButton> */}
+        </div>
 
       </TableCell>
     </TableRow>

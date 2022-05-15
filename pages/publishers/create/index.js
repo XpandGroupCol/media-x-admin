@@ -1,4 +1,4 @@
-import PublisherForm from 'components/forms/publisherForm'
+import PublisherForm from 'components/forms/createPublisherForm'
 
 const userForm = () => {
   return (
