@@ -4,8 +4,6 @@ import styles from '../rows.module.css'
 import { format } from 'date-fns'
 import { memo } from 'react'
 import { areEqual } from 'utils'
-import VisibilityIcon from '@mui/icons-material/Visibility'
-import Link from 'next/link'
 
 const parseDate = (date) => date ? format(new Date(date), 'dd/MM/yyyy') : ''
 
@@ -53,13 +51,13 @@ const PublisherRow = ({ row, onUpdate, onShow }) => {
           <IconButton size='small' onClick={onUpdate}>
             <EditIcon fontSize='small' />
           </IconButton>
-          <Link href={`/campaigns/detail/${row?.id}`}>
+          {/* <Link href={`/campaigns/detail/${row?.id}`}>
             <a>
               <IconButton size='small' onClick={onShow}>
                 <VisibilityIcon fontSize='small' />
               </IconButton>
             </a>
-          </Link>
+          </Link> */}
         </div>
       </TableCell>
     </TableRow>

@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 
@@ -20,6 +19,9 @@ import PhoneInput from 'components/phoneInput'
 import Checkbox from 'components/checkbox'
 import VisibilityIcon from '@mui/icons-material/Visibility'
 import { Avatar } from '@mui/material'
+import { useRouter } from 'next/router'
+import { BASE_URL } from 'utils/constants'
+import { mutate } from 'swr'
 
 const CreateUserForm = ({ user = defaultValues }) => {
   const { formState: { errors }, handleSubmit, control, setValue } = useForm({
@@ -28,6 +30,8 @@ const CreateUserForm = ({ user = defaultValues }) => {
   })
 
   const { loading, mutateHandler } = useMutateHandler()
+
+  const { replace } = useRouter()
 
   const { roles = [] } = useLists()
 
@@ -40,6 +44,12 @@ const CreateUserForm = ({ user = defaultValues }) => {
     }
 
     mutateHandler({ path: `/users/${id}`, method: 'PUT', body })
+      .then((values) => {
+        if (values) {
+          mutate(`${BASE_URL}/users/${id}`)
+          replace('/users')
+        }
+      })
   }
 
   return (

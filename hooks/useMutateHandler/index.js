@@ -7,7 +7,7 @@ const useMutateHandler = () => {
   const [loading, setLoading] = useState(false)
   const { notify } = useNotification()
   const mutateHandler = useCallback(async ({
-    path, body = {}, method, onSuccess, headers = {
+    path, body = {}, method, headers = {
       'Content-Type': 'application/json',
       Accept: 'application/json'
     }
@@ -25,8 +25,8 @@ const useMutateHandler = () => {
 
       notify({ type: 'success', message: 'Registro creado/actualizado con exito.' })
       setLoading(false)
-      onSuccess && onSuccess(data)
-      return data
+
+      return Promise.resolve(data)
     } catch (error) {
       notify({ type: 'error', message: 'Algo salio mal, por favor intente nuevamente.' })
       setLoading(false)
@@ -34,7 +34,7 @@ const useMutateHandler = () => {
   }, [])
 
   const mutateWithImage = useCallback(async ({
-    path, body = {}, method, onSuccess
+    path, body = {}, method
   }) => {
     try {
       setLoading(true)
@@ -48,8 +48,7 @@ const useMutateHandler = () => {
 
       notify({ type: 'success', message: 'Registro creado/actualizado con exito.' })
       setLoading(false)
-      onSuccess && onSuccess(data)
-      return data
+      return Promise.resolve(data)
     } catch (error) {
       notify({ type: 'error', message: 'Algo salio mal, por favor intente nuevamente.' })
       setLoading(false)

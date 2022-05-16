@@ -1,4 +1,3 @@
-import { useCallback } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useFieldArray, useForm } from 'react-hook-form'
@@ -48,11 +47,6 @@ const PublisherForm = ({ publisher = defaultValues, edit = false }) => {
 
   const { loading, mutateWithImage } = useMutateHandler()
 
-  const onSuccess = useCallback(({ data }) => {
-    // publisher?.id && mutate(`${BASE_URL}/publishers/${publisher?.id}`, data)
-    // replace('/publishers')
-  }, [replace, mutate, publisher])
-
   const onSubmit = (values) => {
     const formData = new window.FormData()
 
@@ -86,7 +80,13 @@ const PublisherForm = ({ publisher = defaultValues, edit = false }) => {
       formData.append(key, value ?? '')
     })
 
-    mutateWithImage({ path: '/publishers', method: 'POST', body: formData, onSuccess })
+    mutateWithImage({ path: '/publishers', method: 'POST', body: formData })
+      .then((values) => {
+        if (values) {
+          publisher?.id && mutate(`${BASE_URL}/publishers/${publisher?.id}`)
+          replace('/publishers')
+        }
+      })
   }
 
   const handleAdded = () => {
@@ -189,11 +189,11 @@ const PublisherForm = ({ publisher = defaultValues, edit = false }) => {
           <table className={styles.table}>
             <thead>
               <tr>
-                <th><Typography align='left'>Formato</Typography></th>
-                <th><Typography align='left'>Objetivo</Typography></th>
-                <th><Typography align='left'>Modelo</Typography></th>
-                <th><Typography align='left'>Dispositivo</Typography></th>
-                <th><Typography align='left'>Precio por unidad</Typography></th>
+                <th><Typography align='left' sx={{ fontSize: '13px' }}>Formato</Typography></th>
+                <th><Typography align='left' sx={{ fontSize: '13px' }}>Objetivo</Typography></th>
+                <th><Typography align='left' sx={{ fontSize: '13px' }}>Modelo</Typography></th>
+                <th><Typography align='left' sx={{ fontSize: '13px' }}>Dispositivo</Typography></th>
+                <th><Typography align='left' sx={{ fontSize: '13px' }}>Precio por unidad</Typography></th>
                 <th />
               </tr>
             </thead>

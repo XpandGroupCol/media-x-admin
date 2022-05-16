@@ -1,4 +1,3 @@
-import { useCallback } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useFieldArray, useForm } from 'react-hook-form'
@@ -17,8 +16,8 @@ import AddIcon from '@mui/icons-material/Add'
 import { defaultValues, schema, setList } from './schema'
 import styles from '../form.module.css'
 import { Avatar, IconButton } from '@mui/material'
-import { useSWRConfig } from 'swr'
 import CurrencyInput from 'components/currencyInput'
+import { mutate } from 'swr'
 import { BASE_URL } from 'utils/constants'
 
 const setFormats = (data) => {
@@ -60,14 +59,8 @@ const PublisherForm = ({ publisher = defaultValues, edit = false }) => {
   const { replace } = useRouter()
 
   const { locations = [], formats = [], ages = [], targets = [], sex = [], devices = [], biddingModel = [], publisherCategory = [] } = useLists()
-  const { mutate } = useSWRConfig()
 
   const { loading, mutateHandler } = useMutateHandler()
-
-  const onSuccess = useCallback(({ data }) => {
-    // publisher?.id && mutate(`${BASE_URL}/publishers/${publisher?.id}`, data)
-    // replace('/publishers')
-  }, [replace, mutate, publisher])
 
   const onSubmit = ({ id, locations, ageRange, sex, category, formats, ...values }) => {
     const payload = {
@@ -79,7 +72,13 @@ const PublisherForm = ({ publisher = defaultValues, edit = false }) => {
       formats: setFormats(formats)
     }
 
-    mutateHandler({ path: `/publishers/${id}`, method: 'PUT', body: payload, onSuccess })
+    mutateHandler({ path: `/publishers/${id}`, method: 'PUT', body: payload })
+      .then((values) => {
+        if (values) {
+          replace('/publishers')
+          mutate(`${BASE_URL}/publishers/${id}`)
+        }
+      })
   }
 
   const handleAdded = () => {

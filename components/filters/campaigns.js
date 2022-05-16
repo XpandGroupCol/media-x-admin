@@ -6,7 +6,7 @@ import useQueryParams from 'hooks/useQueryParams'
 // nombre, marca, objetivo, fechas
 
 const CampaignsFilter = () => {
-  const { objectives = [], sectors = [] } = useLists()
+  const { targets = [], sectors = [] } = useLists()
 
   const { objective = 'default', sector = 'default', setQueryParams } = useQueryParams()
 
@@ -28,7 +28,7 @@ const CampaignsFilter = () => {
         size='small'
         onChange={handleChangeList}
         value={objective}
-        options={objectives}
+        options={targets}
       />
       <Select
         name='sector'

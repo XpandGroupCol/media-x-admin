@@ -25,14 +25,14 @@ const Users = () => {
     setModalShow({ type, row })
   }, [])
 
-  const onSuccess = () => {
-    mutate(data, { revalidate: true })
-    handleSetRow()()
-  }
-
   const onDelete = () => {
     const path = `/users/${modalShow?.row?.id}`
-    mutateHandler({ onSuccess, method: 'DELETE', path })
+    mutateHandler({ method: 'DELETE', path }).then(values => {
+      if (values) {
+        mutate(data, { revalidate: true })
+        handleSetRow()()
+      }
+    })
   }
 
   return (

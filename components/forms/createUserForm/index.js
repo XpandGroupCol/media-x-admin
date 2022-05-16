@@ -19,6 +19,7 @@ import { defaultValues, schema } from './schema'
 import PhoneInput from 'components/phoneInput'
 import Checkbox from 'components/checkbox'
 import InputFile from 'components/inputFile'
+import { useRouter } from 'next/router'
 
 const CreateUserForm = () => {
   const { formState: { errors }, handleSubmit, control, setValue } = useForm({
@@ -27,6 +28,8 @@ const CreateUserForm = () => {
   })
 
   const { loading, mutateWithImage } = useMutateHandler()
+
+  const { replace } = useRouter()
 
   const { roles = [] } = useLists()
 
@@ -43,6 +46,11 @@ const CreateUserForm = () => {
     })
 
     mutateWithImage({ path: '/users', method: 'POST', body })
+      .then((values) => {
+        if (values) {
+          replace('/users')
+        }
+      })
   }
 
   return (

@@ -17,12 +17,13 @@
     letter-spacing: 0.03em;
     text-transform: uppercase;
     color: #ed6e27;
-  
+    line-height: 1;
 }
 
 .subtitle{
     color: rgb(75, 73, 79);
     margin-bottom: 36px;
+    font-size: 16px;
 }
 
 .fields{

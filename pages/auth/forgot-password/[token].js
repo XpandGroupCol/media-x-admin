@@ -6,42 +6,54 @@ import Button from 'components/button'
 import Input from 'components/input'
 
 import styles from '../auth.module.css'
+import useSignIn from 'hooks/useSignIn'
 
 import ControllerField from 'components/ControllerField'
 import Link from 'next/link'
 
 import * as yup from 'yup'
-import useForgotpassword from 'hooks/useForgotpassword'
+import useChangePassword from 'hooks/useChangePassword'
+import { Router, useRouter } from 'next/router'
+import { verifyForgotPassword } from 'services/auth'
 
 const defaultValues = {
-  email: ''
+  password: ''
 }
 
 const schema = yup.object({
-  email: yup.string()
-    .email('Ingrese un correo valido.')
-    .required('El correo electronico es requerido')
+  password: yup.string().required('La contraseña es requerida.')
+    .min(8, 'Contraseña debe tener minimo 8 caracteres')
+    .max(15, 'Contraseña debe tener maximo 15 caracteres')
 }).required()
 
-export default function ForgotPassword () {
+export default function ForgotPassword ({ success, token }) {
   const { formState: { errors }, handleSubmit, control } = useForm({
     defaultValues: { ...defaultValues },
     resolver: yupResolver(schema)
   })
 
-  const { forgot, loading } = useForgotpassword()
+  const router = useRouter()
+
+  const { updatePassword, loading } = useChangePassword()
+
+  if (!success) return <p>El link ha expirado.</p>
+
+  const handleChangePassword = ({ password }) => {
+    updatePassword({ password, token }, true).then(response => response && router.replace('/auth/login'))
+  }
 
   return (
     <div className={styles.login}>
       <div className={styles.containerForm}>
-        <form onSubmit={handleSubmit(forgot)}>
+        <form onSubmit={handleSubmit(handleChangePassword)}>
           <h3 className={styles.title}>Recuperar contraseña</h3>
-          <h2 className={styles.subtitle} align='center'>Hola, recupera tu contraseña</h2>
+          <h2 className={styles.subtitle} align='center'>Hola, ingrese la nueva contraseña</h2>
           <section className={styles.fields}>
             <ControllerField
-              name='email'
-              label='Correo electronico'
+              name='password'
+              label='Nueva contraseña'
               control={control}
+              type='password'
               element={Input}
               error={Boolean(errors?.email?.message)}
               helperText={errors?.email?.message}
@@ -68,10 +80,30 @@ export default function ForgotPassword () {
   )
 }
 
-export async function getStaticProps (context) {
+export async function getServerSideProps ({ query }) {
+  if (!query.token) {
+    return {
+      redirect: {
+        destination: '/auth/forgot-password',
+        permanent: false
+      }
+    }
+  }
+
+  let success = false
+
+  try {
+    await verifyForgotPassword(query.token)
+    success = true
+  } catch (e) {
+    success = false
+  }
+
   return {
     props: {
-      protected: true
+      protected: true,
+      success,
+      token: query.token
     }
   }
 }

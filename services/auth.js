@@ -36,3 +36,27 @@ export const authChangePassword = async (password) => {
     return Promise.reject(e)
   }
 }
+
+export const forgotPassword = async (email) => {
+  try {
+    const { data } = await axios(`${BASE_URL}/auth/forgot-password`, {
+      ...OPTIONS,
+      data: email
+    })
+    return data
+  } catch (e) {
+    return Promise.reject(e)
+  }
+}
+
+export const verifyForgotPassword = async (token) => {
+  try {
+    const { data } = await axios(`${BASE_URL}/auth/verify-forgot-password`, {
+      ...OPTIONS,
+      data: { token }
+    })
+    return data
+  } catch (e) {
+    return Promise.reject(e)
+  }
+}

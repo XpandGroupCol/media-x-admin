@@ -24,15 +24,15 @@ const Publishers = () => {
     setModalShow({ type, row })
   }, [])
 
-  const onSuccess = () => {
-    mutate(data, { revalidate: true })
-    handleSetRow()()
-  }
-
   const onDelete = () => {
     const path = `/publishers/${modalShow?.row?.id}`
     const body = { status: !modalShow?.row?.status }
-    mutateHandler({ onSuccess, method: 'DELETE', path, body })
+    mutateHandler({ method: 'DELETE', path, body }).then(values => {
+      if (values) {
+        mutate(data, { revalidate: true })
+        handleSetRow()()
+      }
+    })
   }
 
   return (

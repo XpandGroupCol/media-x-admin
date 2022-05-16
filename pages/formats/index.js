@@ -28,24 +28,30 @@ const Formats = () => {
     setModalShow({ type, row })
   }, [])
 
-  const onSuccess = () => {
-    mutate(data, { revalidate: true })
-    handleSetRow()()
-    refreshLists()
-  }
-
   const onDelete = () => {
     const path = `/formats/${modalShow?.row?._id}`
 
     const body = { status: !modalShow?.row?.status }
-    mutateHandler({ onSuccess, method: 'DELETE', path, body })
+    mutateHandler({ method: 'DELETE', path, body }).then((response) => {
+      if (response) {
+        mutate(data, { revalidate: true })
+        handleSetRow()()
+        refreshLists()
+      }
+    })
   }
 
   const onSubmit = ({ _id: id, type, ...values }) => {
     const body = { ...values, type: type?.id, isVideo: type?.isVideo }
     const path = id ? `/formats/${id}` : '/formats'
     const method = id ? 'PUT' : 'POST'
-    mutateHandler({ path, method, body, onSuccess })
+    mutateHandler({ path, method, body }).then((response) => {
+      if (response) {
+        mutate(data, { revalidate: true })
+        handleSetRow()()
+        refreshLists()
+      }
+    })
   }
 
   return (
@@ -79,7 +85,6 @@ const Formats = () => {
       <FormatForm
         open={Boolean(modalShow?.type === 'form')}
         onClose={handleSetRow()}
-        onSuccess={onSuccess}
         onSubmit={onSubmit}
         loading={load}
         list={modalShow?.row}

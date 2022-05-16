@@ -28,24 +28,32 @@ const Objetives = () => {
     setModalShow({ type, row })
   }, [])
 
-  const onSuccess = () => {
-    mutate(data, { revalidate: true })
-    handleSetRow()()
-    refreshLists()
-  }
-
   const onDelete = () => {
     const path = `/objetives/${modalShow?.row?._id}`
 
     const body = { status: !modalShow?.row?.status }
-    mutateHandler({ onSuccess, method: 'DELETE', path, body })
+    mutateHandler({ method: 'DELETE', path, body })
+      .then(values => {
+        if (values) {
+          mutate(data, { revalidate: true })
+          handleSetRow()()
+          refreshLists()
+        }
+      })
   }
 
   const onSubmit = ({ _id, name, category }) => {
     const body = { name, category: category.map(({ id }) => id) }
     const path = _id ? `/targets/${_id}` : '/targets'
     const method = _id ? 'PUT' : 'POST'
-    mutateHandler({ path, method, body, onSuccess })
+    mutateHandler({ path, method, body })
+      .then(values => {
+        if (values) {
+          mutate(data, { revalidate: true })
+          handleSetRow()()
+          refreshLists()
+        }
+      })
   }
 
   return (
@@ -79,7 +87,6 @@ const Objetives = () => {
       <TargetForm
         open={Boolean(modalShow?.type === 'form')}
         onClose={handleSetRow()}
-        onSuccess={onSuccess}
         onSubmit={onSubmit}
         Sload={load}
         list={modalShow?.row}
