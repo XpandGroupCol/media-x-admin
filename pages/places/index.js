@@ -10,7 +10,7 @@ import CustomTable from 'components/table'
 import Typography from 'components/typography'
 
 import SectorFilters from 'components/filters/lists'
-import ListRow, { HEADERS } from 'components/table/rows/listRow'
+import LocationRow, { HEADERS } from 'components/table/rows/locationRow'
 import LocationForm from 'components/forms/locationForm'
 import { useLists } from 'providers/listProvider'
 
@@ -74,7 +74,7 @@ const Places = () => {
         error={error}
       >
         {locations.map(row => (
-          <ListRow
+          <LocationRow
             key={row?._id}
             row={row}
             onUpdate={handleSetRow('form', row)}

@@ -1,6 +1,7 @@
 import { forwardRef } from 'react'
 import Phone from 'react-phone-input-2'
 import 'react-phone-input-2/lib/material.css'
+import { COUNTRIES } from 'utils/constants'
 import styles from './phone.module.css'
 const PhoneInput = forwardRef(({ value, onChange, label, name, ...props }, ref) => (
   <Phone
@@ -15,7 +16,7 @@ const PhoneInput = forwardRef(({ value, onChange, label, name, ...props }, ref) 
     }}
     name={name}
     country='co'
-    onlyCountries={['co', 'mx', 'br', 'ar', 'ur', 'cl']}
+    onlyCountries={COUNTRIES}
     containerClass={styles.input}
     inputClass={styles.inputClass}
     {...props}
