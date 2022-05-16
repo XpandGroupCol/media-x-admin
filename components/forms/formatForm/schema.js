@@ -11,6 +11,6 @@ export const defaultValues = {
 export const schema = yup.object({
   width: yup.number().typeError('Ancho debe ser un numero').required(),
   height: yup.number().typeError('Alto debe ser un numero').required('Formato es requerido'),
-  type: yup.object().required().nullable(),
+  type: yup.object().required('Tipo es requerido').nullable(),
   name: yup.string().required('Nombre es requerido')
 }).required()

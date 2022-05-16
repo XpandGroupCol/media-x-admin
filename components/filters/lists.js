@@ -7,7 +7,7 @@ const ListSearch = () => {
         name='search'
         label='Buscar'
         size='small'
-        placeholder='Buscar por nombre o correo'
+        placeholder='Buscar por nombre de la lista'
       />
     </>
   )

@@ -8,23 +8,25 @@ import StatusTag from 'components/statusTag'
 import styles from '../rows.module.css'
 import { areEqual } from 'utils'
 import Link from 'next/link'
+import HighlightOffIcon from '@mui/icons-material/HighlightOff'
 
 export const HEADERS = [
   'Name',
   'Compañia',
   'Rol',
-  'Auth',
   'Estado',
+  'Rut',
   'verificado',
   'Acciones'
 ]
 const UserRow = ({ row, onUpdate, onDelete }) => {
+  console.log({ row })
   return (
     <TableRow>
       <TableCell width='30%'>
         <div className={styles.row}>
-          {row?.image
-            ? <Avatar sx={{ width: 36, height: 36 }} src={row?.image} />
+          {row?.avatar
+            ? <Avatar sx={{ width: 36, height: 36 }} src={row?.avatar} />
             : (
               <Avatar sx={{ width: 36, height: 36, textTransform: 'uppercase' }}>
                 {row?.fullName.slice(0, 2)}
@@ -43,7 +45,7 @@ const UserRow = ({ row, onUpdate, onDelete }) => {
         {row.role?.label}
       </TableCell>
       <TableCell width='10%'>
-        {row.provider}
+        {row?.checkRut ? <CheckCircleOutlineIcon fontSize='small' sx={{ color: '#54d62c' }} /> : <HighlightOffIcon color='error' fontSize='small' />}
       </TableCell>
       <TableCell width='10%'>
         <StatusTag status={row.status?.id === 0} />

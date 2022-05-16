@@ -4,7 +4,7 @@ import { useLists } from 'providers/listProvider'
 import useQueryParams from 'hooks/useQueryParams'
 
 const PublisherFilters = () => {
-  const { locations = [], objectives = [] } = useLists()
+  const { locations = [], targets = [] } = useLists()
 
   const { location = 'default', objective = 'default', setQueryParams } = useQueryParams()
 
@@ -18,7 +18,7 @@ const PublisherFilters = () => {
         name='search'
         label='Buscar'
         size='small'
-        placeholder='Buscar por nombre o correo'
+        placeholder='Buscar por nombre'
       />
       <Select
         name='objective'
@@ -26,7 +26,7 @@ const PublisherFilters = () => {
         size='small'
         onChange={handleChangeList}
         value={objective}
-        options={objectives}
+        options={targets}
       />
       <Select
         name='location'

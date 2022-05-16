@@ -1,39 +1,6 @@
 
-import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
-import cookie from 'js-cookie'
-import { useRouter } from 'next/router'
-import { getSession } from 'utils/cookie'
+import { createContext, useContext } from 'react'
 
-const SessionContext = createContext()
-
-const SessionProvider = ({ children }) => {
-  const [user, setUser] = useState(undefined)
-  const router = useRouter()
-
-  useEffect(() => {
-    setUser(getSession())
-  }, [])
-
-  const setSession = useCallback((user) => {
-    setUser(user)
-    cookie.set('user', JSON.stringify(user))
-  }, [])
-
-  const logout = useCallback(() => {
-    cookie.remove('user')
-    setUser(null)
-    router.replace('/auth/login')
-  }, [])
-
-  const session = useMemo(() => user, [user])
-
-  return (
-    <SessionContext.Provider value={{ session, setSession, logout }}>
-      {children}
-    </SessionContext.Provider>
-  )
-}
+export const SessionContext = createContext()
 
 export const useSession = () => useContext(SessionContext)
-
-export default SessionProvider

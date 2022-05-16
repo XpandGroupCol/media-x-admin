@@ -9,16 +9,43 @@ import NotificationProvider from 'providers/notificationProvider'
 import { lightTheme } from '../theme'
 import './globalStyles.css'
 import ListProvider from 'providers/listProvider'
-import SessionProvider from 'providers/sessionProvider'
+import { SessionContext } from 'providers/sessionProvider'
 import { Admin, Auth } from 'layouts'
 import { fetcher } from 'utils/fetcher'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useRouter } from 'next/router'
+import { getSession } from 'utils/cookie'
+import LoadingPage from 'components/loadingPage'
+import jsCookie from 'js-cookie'
 
 function MyApp ({ Component, pageProps }) {
+  const [user, setUser] = useState(undefined)
+  const router = useRouter()
+
+  useEffect(() => {
+    setUser(getSession())
+  }, [])
+
+  const setSession = useCallback((user) => {
+    setUser(user)
+    jsCookie.set('user', JSON.stringify(user))
+  }, [])
+
+  const logout = useCallback(() => {
+    jsCookie.remove('user')
+    setUser(null)
+    router.replace('/auth/login')
+  }, [])
+
+  const session = useMemo(() => user, [user])
+
+  if (!pageProps.protected && user === undefined) return <LoadingPage />
+
   return (
     <ThemeProvider theme={lightTheme}>
       <LocalizationProvider dateAdapter={AdapterDateFns}>
         <NotificationProvider>
-          <SessionProvider>
+          <SessionContext.Provider value={{ session, setSession, logout }}>
             <SWRConfig value={{
               fetcher: (resource) => fetcher(resource).then(({ data }) => data),
               revalidateOnFocus: false
@@ -39,7 +66,7 @@ function MyApp ({ Component, pageProps }) {
                   </Admin>
                   )}
             </SWRConfig>
-          </SessionProvider>
+          </SessionContext.Provider>
           <CssBaseline />
         </NotificationProvider>
       </LocalizationProvider>

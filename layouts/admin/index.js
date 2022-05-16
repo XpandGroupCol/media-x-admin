@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import classNames from 'classnames'
 
 import { Avatar, Divider, IconButton, Menu, MenuItem } from '@mui/material'
@@ -19,7 +19,6 @@ import { useSession } from 'providers/sessionProvider'
 
 import styles from '../layout.module.css'
 import { useRouter } from 'next/router'
-import LoadingPage from 'components/loadingPage'
 import Link from 'next/link'
 
 const AdminLayout = ({ children }) => {
@@ -35,17 +34,16 @@ const AdminLayout = ({ children }) => {
   const handleShowMenu = () =>
     setShowMenu(prevValue => !prevValue)
 
+  const handleCloseMenu = () => setShowMenu(false)
+
   const { session, logout } = useSession()
 
   const { replace } = useRouter()
 
-  useEffect(() => {
-    if (session === null) replace('/auth/login')
-  }, [session, replace])
-
-  if (session === undefined) return <LoadingPage />
-
-  if (session === null) return null
+  if (session === null) {
+    replace('/auth/login')
+    return null
+  }
 
   return (
     <div className={styles.page}>
@@ -54,19 +52,19 @@ const AdminLayout = ({ children }) => {
         <Typography className={styles.logo}>MEDIAX</Typography>
         <div className={styles.nav}>
           <ActiveLink href='/' activeClassName={styles.active}>
-            <a className={styles.link}>
+            <a className={styles.link} onClick={handleCloseMenu}>
               <DashboardIcon />
               Dashboard
             </a>
           </ActiveLink>
           <ActiveLink href='/users' activeClassName={styles.active}>
-            <a className={styles.link}>
+            <a className={styles.link} onClick={handleCloseMenu}>
               <PersonIcon />
               Usuarios
             </a>
           </ActiveLink>
           <ActiveLink href='/campaigns' activeClassName={styles.active}>
-            <a className={styles.link}>
+            <a className={styles.link} onClick={handleCloseMenu}>
               <CampaignIcon />
               Campañas
             </a>
@@ -78,31 +76,31 @@ const AdminLayout = ({ children }) => {
             </a>
           </ActiveLink>
           <ActiveLink href='/publishers' activeClassName={styles.active}>
-            <a className={styles.link}>
+            <a className={styles.link} onClick={handleCloseMenu}>
               <ArtTrackIcon />
               Publishers
             </a>
           </ActiveLink>
           <ActiveLink href='/objectives' activeClassName={styles.active}>
-            <a className={styles.link}>
+            <a className={styles.link} onClick={handleCloseMenu}>
               <GpsFixedIcon />
               Objetivos
             </a>
           </ActiveLink>
           <ActiveLink href='/places' activeClassName={styles.active}>
-            <a className={styles.link}>
+            <a className={styles.link} onClick={handleCloseMenu}>
               <PlaceIcon />
               Ubicaciones
             </a>
           </ActiveLink>
           <ActiveLink href='/sectors' activeClassName={styles.active}>
-            <a className={styles.link}>
+            <a className={styles.link} onClick={handleCloseMenu}>
               <InsightsIcon />
               Sectores
             </a>
           </ActiveLink>
           <ActiveLink href='/formats' activeClassName={styles.active}>
-            <a className={styles.link}>
+            <a className={styles.link} onClick={handleCloseMenu}>
               <InsightsIcon />
               Formatos
             </a>
@@ -146,7 +144,7 @@ const AdminLayout = ({ children }) => {
           >
 
             <Link href='/profile'>
-              <a>
+              <a onClick={handleClose}>
                 <MenuItem>
                   <PersonIcon fontSize='small' sx={{ marginRight: '10px' }} />
                   Perfil

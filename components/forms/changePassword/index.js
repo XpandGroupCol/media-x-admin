@@ -1,4 +1,3 @@
-import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 
@@ -12,19 +11,29 @@ import styles from '../form.module.css'
 import { Dialog, DialogActions, DialogContent, DialogTitle, IconButton, useMediaQuery } from '@mui/material'
 import { useTheme } from '@emotion/react'
 import CloseIcon from '@mui/icons-material/Close'
+import useChangePassword from 'hooks/useChangePassword'
+import { useEffect } from 'react'
 
-const ListForm = ({ open, onClose, list, onSubmit, loading, title, placeholder }) => {
+const ChangePassword = ({ open, onClose, onSubmit }) => {
   const { formState: { errors }, handleSubmit, control, reset } = useForm({
-    defaultValues: list?.id ? list : { ...defaultValues },
+    defaultValues: { ...defaultValues },
     resolver: yupResolver(schema)
   })
+
+  useEffect(() => {
+    if (!open) reset()
+  }, [open])
+
+  const { loading, updatePassword } = useChangePassword()
 
   const theme = useTheme()
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'))
 
-  useEffect(() => {
-    reset(list?._id ? list : defaultValues)
-  }, [open])
+  const onUpdatePassword = (values) => {
+    updatePassword(values).then((values) => {
+      if (values) onSubmit()
+    })
+  }
 
   return (
     <Dialog
@@ -36,7 +45,7 @@ const ListForm = ({ open, onClose, list, onSubmit, loading, title, placeholder }
       fullWidth
     >
       <DialogTitle id='responsive-dialog-title' className={styles.modalTitle}>
-        {list?._id ? 'Editar ' : 'Crear '}{title}
+        Cambiar Contraseña
         <div className={styles.deleteIcon}>
           <IconButton size='small' onClick={onClose}>
             <CloseIcon fontSize='small' />
@@ -44,14 +53,15 @@ const ListForm = ({ open, onClose, list, onSubmit, loading, title, placeholder }
         </div>
       </DialogTitle>
       <DialogContent>
-        <form onSubmit={handleSubmit(onSubmit)} className={styles.modalForm}>
+        <form onSubmit={handleSubmit(onUpdatePassword)} className={styles.modalForm}>
           <ControllerField
-            name='name'
-            label={placeholder}
+            name='password'
+            label='Nueva contraseña'
+            type='password'
             control={control}
             element={Input}
-            error={Boolean(errors?.name?.message)}
-            helperText={errors?.name?.message}
+            error={Boolean(errors?.password?.message)}
+            helperText={errors?.password?.message}
           />
         </form>
       </DialogContent>
@@ -59,7 +69,7 @@ const ListForm = ({ open, onClose, list, onSubmit, loading, title, placeholder }
         <Button variant='outlined' color='secondary' onClick={onClose}>
           Cancelar
         </Button>
-        <Button type='submit' loading={loading} onClick={handleSubmit(onSubmit)}>
+        <Button type='submit' loading={loading} onClick={handleSubmit(onUpdatePassword)}>
           Guardar
         </Button>
       </DialogActions>
@@ -69,4 +79,4 @@ const ListForm = ({ open, onClose, list, onSubmit, loading, title, placeholder }
   )
 }
 
-export default ListForm
+export default ChangePassword

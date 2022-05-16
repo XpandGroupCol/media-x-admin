@@ -2,9 +2,9 @@
 import * as yup from 'yup'
 
 export const defaultValues = {
-  name: ''
+  password: ''
 }
 
 export const schema = yup.object({
-  name: yup.string().required('Nombre de lista es requerido')
+  password: yup.string().required('Contraseña es requerida')
 }).required()
