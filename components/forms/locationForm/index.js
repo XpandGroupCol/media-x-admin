@@ -17,7 +17,7 @@ import { COUNTRIES_LIST } from 'utils/constants'
 
 const mapList = ({ name, country, _id }) => ({
   name: name,
-  country: { id: country, label: country },
+  country: COUNTRIES_LIST.find(({ id }) => id === country) ?? null,
   _id
 })
 
@@ -33,6 +33,8 @@ const LocationForm = ({ open, onClose, list, loading, title, onSubmit }) => {
   useEffect(() => {
     reset(list?._id ? mapList(list) : defaultValues)
   }, [open])
+
+  console.log({ list })
 
   return (
     <Dialog

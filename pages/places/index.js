@@ -87,7 +87,7 @@ const Places = () => {
         open={Boolean(modalShow?.type === 'form')}
         onClose={handleSetRow()}
         onSubmit={onSubmit}
-        Sload={load}
+        loading={load}
         list={modalShow?.row}
         title='Ubicacion'
         placeholder='ubicacion'

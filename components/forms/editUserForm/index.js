@@ -35,6 +35,8 @@ const CreateUserForm = ({ user = defaultValues }) => {
 
   const { roles = [] } = useLists()
 
+  console.log({ user })
+
   const onSubmit = ({ phone = '', phonePrefixed = '', role, id, fullName, ...user }) => {
     const body = {
       ...user,

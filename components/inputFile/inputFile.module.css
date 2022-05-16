@@ -1,5 +1,5 @@
 .inputFile {
-   display: none;
+   display: none !important;
 
 }
 
@@ -27,5 +27,10 @@
     text-overflow: ellipsis;
     white-space: nowrap;
     display: inline-block;
+}
+
+.placeholder{
+    display: flex;
+    align-items: center;
 }
 

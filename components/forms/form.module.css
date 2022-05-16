@@ -136,9 +136,9 @@
 }
 
 .subtitle {
-    font-size: 20px;
+    font-size: 20px !important;
     width: 100%;
-    font-weight: bold;
+    font-weight: bold !important;
 }
 
 .avatar {
