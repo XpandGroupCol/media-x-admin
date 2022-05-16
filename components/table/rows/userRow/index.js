@@ -48,7 +48,7 @@ const UserRow = ({ row, onUpdate, onDelete }) => {
         {row?.checkRut ? <CheckCircleOutlineIcon fontSize='small' sx={{ color: '#54d62c' }} /> : <HighlightOffIcon color='error' fontSize='small' />}
       </TableCell>
       <TableCell width='10%'>
-        <StatusTag status={row.status?.id === 0} />
+        <StatusTag status={row.status} />
       </TableCell>
       <TableCell width='10%' align='center'>
         {row.emailVerified ? <CheckCircleOutlineIcon fontSize='small' sx={{ color: '#54d62c' }} /> : <QueryBuilderIcon color='warning' fontSize='small' />}
